@@ -1,0 +1,16 @@
+${AnsiColor.BRIGHT_BLUE}
+
+  .oooooo.     .oooooo.                 .o.       oooooooooo.   ooo        ooooo ooooo ooooo      ooo
+ d8P'  `Y8b   d8P'  `Y8b               .888.      `888'   `Y8b  `88.       .888' `888' `888b.     `8'
+888          888                      .8"888.      888      888  888b     d'888   888   8 `88b.    8
+888          888                     .8' `888.     888      888  8 Y88. .P  888   888   8   `88b.  8
+888          888          8888888   .88ooo8888.    888      888  8  `888'   888   888   8     `88b.8
+`88b    ooo  `88b    ooo           .8'     `888.   888     d88'  8    Y     888   888   8       `888
+ `Y8bood8P'   `Y8bood8P'          o88o     o8888o o888bood8P'   o8o        o888o o888o o8o        `8
+
+
+
+${AnsiColor.BRIGHT_GREEN}
+CC  Admin Version: 1.0.0
+Spring Boot Version: ${spring-boot.version}${spring-boot.formatted-version}
+${AnsiColor.BLACK}

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.admin.modules.system.mapper.SysDictItemMapper">
+
+	<!--通过查询指定table的 text code 获取字典-->
+	<select id="selectItemsByTable" parameterType="String"  resultType="cc.admin.modules.system.entity.SysDictItem">
+		   select ${text} as "item_text",${code} as "item_value" from ${table}
+	</select>
+</mapper>
