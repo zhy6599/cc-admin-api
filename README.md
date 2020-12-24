@@ -9,8 +9,9 @@
 </div>
 
 #### 项目简介
-一个基于 Spring Boot 2.1.3 、 Spring Boot Mybatis plus、 JWT、Spring Security、Redis、Vue的前后端分离的后台管理系统
+一个基于 Spring Boot 2.1.3 、 Spring Boot Mybatis plus、 JWT、Spring Security、Redis、Vue quasar的前后端分离的后台管理系统(quasar 是重点！)
 
+本项目以后的发展方向打算向数据分析和BI方向靠拢！（不排除会变）
 
 **体验地址：**  [http://8.131.83.13:10000/](http://8.131.83.13:10000/)
 
@@ -57,4 +58,20 @@
 
 #### 反馈交流
 
-- QQ交流群：群：<strike>965940297</strike> 
+- QQ交流群：群：965940297
+
+
+#### 系统效果预览
+
+![1](https://gitee.com/zhy6599/preview/raw/master/1.png)
+![2](https://gitee.com/zhy6599/preview/raw/master/2.png)
+![3](https://gitee.com/zhy6599/preview/raw/master/3.png)
+![4](https://gitee.com/zhy6599/preview/raw/master/4.png)
+![5](https://gitee.com/zhy6599/preview/raw/master/5.png)
+![6](https://gitee.com/zhy6599/preview/raw/master/6.png)
+![7](https://gitee.com/zhy6599/preview/raw/master/7.png)
+![8](https://gitee.com/zhy6599/preview/raw/master/8.png)
+![9](https://gitee.com/zhy6599/preview/raw/master/9.png)
+![10](https://gitee.com/zhy6599/preview/raw/master/10.png)
+![11](https://gitee.com/zhy6599/preview/raw/master/11.png)
+![12](https://gitee.com/zhy6599/preview/raw/master/12.png)
