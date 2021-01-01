@@ -281,9 +281,34 @@ public class ViewServiceImpl extends ServiceImpl<ViewMapper, View> implements IV
 			resultMap = getWordCloudData(id, executeParam);
 		} else if ("gauge".equals(executeParam.getType())) {
 			resultMap = getGaugeData(id, executeParam);
+		} else if ("text".equals(executeParam.getType())) {
+			resultMap = getTextData(id, executeParam);
 		} else {
 			resultMap = getLineData(id, executeParam);
 		}
+		return resultMap;
+	}
+
+	/**
+	 * 这里希望聚合函数不要影响到返回字段便于使用
+	 * @param id
+	 * @param executeParam
+	 * @return
+	 */
+	private Map<String, Object> getTextData(String id, ViewExecuteParam executeParam) {
+		Page<Map<String, Object>> resultPage = getData(id, executeParam);
+		Map<String, Object> resultMap = Maps.newHashMap();
+		List<Map<String, Object>> resultList = Lists.newArrayList();
+		List<Map<String, Object>> dataList = resultPage.getRecords();
+		dataList.forEach(data->{
+			Map<String, Object> m = Maps.newHashMap();
+			List<Aggregator> aggregatorList = executeParam.getAggregators();
+			aggregatorList.forEach(aggregator -> {
+				m.put(aggregator.getColumn(), data.get(aggregator.getName()));
+			});
+			resultList.add(m);
+		});
+		resultMap.put("dataList", resultList);
 		return resultMap;
 	}
 
