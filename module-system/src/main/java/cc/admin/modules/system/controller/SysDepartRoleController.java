@@ -66,8 +66,8 @@ public class SysDepartRoleController extends BaseController<SysDepartRole, ISysD
 	@ApiOperation(value="部门角色-分页列表查询", notes="部门角色-分页列表查询")
 	@GetMapping(value = "/list")
 	public Result<?> queryPageList(SysDepartRole sysDepartRole,
-								   @RequestParam(name="page", defaultValue="1") Integer pageNo,
-								   @RequestParam(name="rowsPerPage", defaultValue="10") Integer pageSize,
+								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   @RequestParam(name="deptId",required=false) String deptId,
 								   HttpServletRequest req) {
 		QueryWrapper<SysDepartRole> queryWrapper = QueryGenerator.initQueryWrapper(sysDepartRole, req.getParameterMap());

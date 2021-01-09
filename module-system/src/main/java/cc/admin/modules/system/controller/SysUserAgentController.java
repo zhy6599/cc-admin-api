@@ -57,8 +57,8 @@ public class SysUserAgentController {
 	 */
 	@GetMapping(value = "/list")
 	public Result<IPage<SysUserAgent>> queryPageList(SysUserAgent sysUserAgent,
-													 @RequestParam(name="page", defaultValue="1") Integer pageNo,
-													 @RequestParam(name="rowsPerPage", defaultValue="10") Integer pageSize,
+													 @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+													 @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 													 HttpServletRequest req) {
 		Result<IPage<SysUserAgent>> result = new Result<IPage<SysUserAgent>>();
 		QueryWrapper<SysUserAgent> queryWrapper = QueryGenerator.initQueryWrapper(sysUserAgent, req.getParameterMap());

@@ -46,8 +46,8 @@ public class SysAnnouncementSendController {
 	 */
 	@GetMapping(value = "/list")
 	public Result<IPage<SysAnnouncementSend>> queryPageList(SysAnnouncementSend sysAnnouncementSend,
-															@RequestParam(name="page", defaultValue="1") Integer pageNo,
-															@RequestParam(name="rowsPerPage", defaultValue="10") Integer pageSize,
+															@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+															@RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 															HttpServletRequest req) {
 		Result<IPage<SysAnnouncementSend>> result = new Result<IPage<SysAnnouncementSend>>();
 		QueryWrapper<SysAnnouncementSend> queryWrapper = new QueryWrapper<SysAnnouncementSend>(sysAnnouncementSend);
@@ -194,8 +194,8 @@ public class SysAnnouncementSendController {
 	 */
 	@GetMapping(value = "/getMyAnnouncementSend")
 	public Result<IPage<AnnouncementSendModel>> getMyAnnouncementSend(AnnouncementSendModel announcementSendModel,
-																	  @RequestParam(name="page", defaultValue="1") Integer pageNo,
-																	  @RequestParam(name="rowsPerPage", defaultValue="10") Integer pageSize) {
+																	  @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+																	  @RequestParam(name="pageSize", defaultValue="10") Integer pageSize) {
 		Result<IPage<AnnouncementSendModel>> result = new Result<IPage<AnnouncementSendModel>>();
 		LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();
 		String userId = sysUser.getId();

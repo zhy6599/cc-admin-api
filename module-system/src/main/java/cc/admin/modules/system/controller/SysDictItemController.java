@@ -46,6 +46,7 @@ public class SysDictItemController implements InitializingBean {
 	public void afterPropertiesSet() throws Exception {
 		dictTableMap.put("demoOrderType", new DictTable("demo_order_type", "id", "name"));
 		dictTableMap.put("biView", new DictTable("bi_view", "id", "name"));
+		dictTableMap.put("biMap", new DictTable("bi_map", "id", "name"));
 		dictTableMap.put("sysPosition", new DictTable("sys_position", "id", "name"));
 		dictTableMap.put("sysRole", new DictTable("sys_role", "id", "role_name"));
 		dictTableMap.put("demoOrderType", new DictTable("demo_order_type", "id", "name"));

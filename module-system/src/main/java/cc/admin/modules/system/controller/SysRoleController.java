@@ -70,8 +70,8 @@ public class SysRoleController {
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public Result<IPage<SysRole>> queryPageList(SysRole role,
-												@RequestParam(name="page", defaultValue="1") Integer pageNo,
-												@RequestParam(name="rowsPerPage", defaultValue="10") Integer pageSize,
+												@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+												@RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 												HttpServletRequest req) {
 		Result<IPage<SysRole>> result = new Result<IPage<SysRole>>();
 		QueryWrapper<SysRole> queryWrapper = QueryGenerator.initQueryWrapper(role, req.getParameterMap());

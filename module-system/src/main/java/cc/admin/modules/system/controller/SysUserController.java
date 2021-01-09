@@ -102,8 +102,8 @@ public class SysUserController {
      */
     @PermissionData(pageComponent = "system/UserList")
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public Result<IPage<SysUser>> queryPageList(SysUser user, @RequestParam(name="page", defaultValue="1") Integer pageNo,
-												@RequestParam(name="rowsPerPage", defaultValue="10") Integer pageSize, HttpServletRequest req) {
+	public Result<IPage<SysUser>> queryPageList(SysUser user, @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+												@RequestParam(name="pageSize", defaultValue="10") Integer pageSize, HttpServletRequest req) {
 		Result<IPage<SysUser>> result = new Result<IPage<SysUser>>();
 		QueryWrapper<SysUser> queryWrapper = QueryGenerator.initQueryWrapper(user, req.getParameterMap());
         queryWrapper.ne("username","_reserve_user_external");
@@ -576,8 +576,8 @@ public class SysUserController {
 	}
 
     @RequestMapping(value = "/userRoleList", method = RequestMethod.GET)
-    public Result<IPage<SysUser>> userRoleList(@RequestParam(name="page", defaultValue="1") Integer pageNo,
-                                               @RequestParam(name="rowsPerPage", defaultValue="10") Integer pageSize, HttpServletRequest req) {
+    public Result<IPage<SysUser>> userRoleList(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+                                               @RequestParam(name="pageSize", defaultValue="10") Integer pageSize, HttpServletRequest req) {
         Result<IPage<SysUser>> result = new Result<IPage<SysUser>>();
         Page<SysUser> page = new Page<SysUser>(pageNo, pageSize);
         String roleId = req.getParameter("roleId");
@@ -686,8 +686,8 @@ public class SysUserController {
      * 部门用户列表
      */
     @RequestMapping(value = "/departUserList", method = RequestMethod.GET)
-    public Result<IPage<SysUser>> departUserList(@RequestParam(name="page", defaultValue="1") Integer pageNo,
-                                                 @RequestParam(name="rowsPerPage", defaultValue="10") Integer pageSize, HttpServletRequest req) {
+    public Result<IPage<SysUser>> departUserList(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+                                                 @RequestParam(name="pageSize", defaultValue="10") Integer pageSize, HttpServletRequest req) {
         Result<IPage<SysUser>> result = new Result<IPage<SysUser>>();
         Page<SysUser> page = new Page<SysUser>(pageNo, pageSize);
         String depId = req.getParameter("depId");
@@ -1117,8 +1117,8 @@ public class SysUserController {
 	@GetMapping("/appUserList")
 	public Result<?> appUserList(@RequestParam(name = "keyword", required = false) String keyword,
             @RequestParam(name = "username", required = false) String username,
-			@RequestParam(name="page", defaultValue="1") Integer pageNo,
-			@RequestParam(name="rowsPerPage", defaultValue="10") Integer pageSize) {
+			@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+			@RequestParam(name="pageSize", defaultValue="10") Integer pageSize) {
 		try {
 			LambdaQueryWrapper<SysUser> query = new LambdaQueryWrapper<SysUser>();
 			query.eq(SysUser::getActivitiSync, "1");

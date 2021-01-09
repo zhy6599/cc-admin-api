@@ -66,8 +66,8 @@ public class SysDepartPermissionController extends BaseController<SysDepartPermi
 	@ApiOperation(value="部门权限表-分页列表查询", notes="部门权限表-分页列表查询")
 	@GetMapping(value = "/list")
 	public Result<?> queryPageList(SysDepartPermission sysDepartPermission,
-								   @RequestParam(name="page", defaultValue="1") Integer pageNo,
-								   @RequestParam(name="rowsPerPage", defaultValue="10") Integer pageSize,
+								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
 		QueryWrapper<SysDepartPermission> queryWrapper = QueryGenerator.initQueryWrapper(sysDepartPermission, req.getParameterMap());
 		Page<SysDepartPermission> page = new Page<SysDepartPermission>(pageNo, pageSize);

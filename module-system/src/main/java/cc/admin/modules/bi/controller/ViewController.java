@@ -59,8 +59,8 @@ public class ViewController extends BaseController<View, IViewService> {
 	 public Result<?> queryPageList(
 									@RequestParam(name = "key", required = false) String key,
 									@RequestParam(name = "catalog") String catalog,
-									@RequestParam(name="page", defaultValue="1") Integer pageNo,
-									@RequestParam(name="rowsPerPage", defaultValue="10") Integer pageSize,
+									@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+									@RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 									HttpServletRequest req) {
 		 QueryWrapper<View> queryWrapper = QueryGenerator.initQueryWrapper(new View(), req.getParameterMap());
 		 if (StrUtil.isNotEmpty(key)) {
@@ -115,17 +115,37 @@ public class ViewController extends BaseController<View, IViewService> {
 
 
 	/**
-	 *   查询视图数据
+	 *   查询表格数据
+	 *
+	 * @param id
+	 * @param executeParam
+	 * @return
+	 */
+	@AutoLog(value = "bi_view-查询表格数据")
+	@ApiOperation(value = "bi_view-查询表格数据", notes = "bi_view-查询表格数据")
+	@PostMapping(value = "/getTableData/{id}")
+	public Result<?> getTableData(@PathVariable String id,
+								  @RequestBody(required = false) ViewExecuteParam executeParam) {
+		try {
+			Map<String, Object> resultMap = viewService.getTableData(id, executeParam);
+			return Result.ok(resultMap);
+		} catch (Exception e) {
+			return Result.error("查询失败：" + e.getMessage());
+		}
+	}
+
+	/**
+	 * 查询视图数据
 	 *
 	 * @param id
 	 * @param executeParam
 	 * @return
 	 */
 	@AutoLog(value = "bi_view-查询图形数据")
-	@ApiOperation(value="bi_view-查询图形数据", notes="bi_view-查询图形数据")
+	@ApiOperation(value = "bi_view-查询图形数据", notes = "bi_view-查询图形数据")
 	@PostMapping(value = "/getChartData/{id}")
 	public Result<?> getChartData(@PathVariable String id,
-							 @RequestBody(required = false) ViewExecuteParam executeParam) {
+								  @RequestBody(required = false) ViewExecuteParam executeParam) {
 		try {
 			Map<String, Object> resultMap = viewService.getChartData(id, executeParam);
 			return Result.ok(resultMap);

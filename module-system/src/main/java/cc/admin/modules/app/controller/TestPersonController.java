@@ -47,8 +47,8 @@ public class TestPersonController extends BaseController<TestPerson, ITestPerson
 	@ApiOperation(value="test_person-分页列表查询", notes="test_person-分页列表查询")
 	@GetMapping(value = "/list")
 	public Result<?> queryPageList(TestPerson testPerson,
-								   @RequestParam(name="page", defaultValue="1") Integer pageNo,
-								   @RequestParam(name="rowsPerPage", defaultValue="10") Integer pageSize,
+								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
 		QueryWrapper<TestPerson> queryWrapper = QueryGenerator.initQueryWrapper(testPerson, req.getParameterMap());
 		Page<TestPerson> page = new Page<TestPerson>(pageNo, pageSize);

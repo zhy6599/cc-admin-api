@@ -66,8 +66,8 @@ public class SysAnnouncementController {
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public Result<IPage<SysAnnouncement>> queryPageList(SysAnnouncement sysAnnouncement,
-														@RequestParam(name="page", defaultValue="1") Integer pageNo,
-														@RequestParam(name="rowsPerPage", defaultValue="10") Integer pageSize,
+														@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+														@RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 														HttpServletRequest req) {
 		Result<IPage<SysAnnouncement>> result = new Result<IPage<SysAnnouncement>>();
 		sysAnnouncement.setDelFlag(CommonConstant.DEL_FLAG_0.toString());

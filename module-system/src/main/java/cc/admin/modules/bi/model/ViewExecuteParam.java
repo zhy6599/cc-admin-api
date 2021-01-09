@@ -3,6 +3,7 @@ package cc.admin.modules.bi.model;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.druid.util.StringUtils;
+import com.google.common.collect.Lists;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import static cc.admin.modules.bi.core.common.Consts.*;
 
 @Data
 public class ViewExecuteParam {
-    private List<String> groups;
+	private List<Group> groups;
     private List<Aggregator> aggregators;
     private List<Order> orders;
     private List<String> filters;
@@ -25,6 +26,10 @@ public class ViewExecuteParam {
 	 * 图形类型
 	 */
 	private String type;
+	/**
+	 * 水平表格
+	 */
+	private Boolean horizontal = false;
     private Boolean flush = false;
     private int limit = 0;
     private int pageNo = -1;
@@ -34,9 +39,9 @@ public class ViewExecuteParam {
     private boolean nativeQuery = false;
 
     public ViewExecuteParam() {
-    }
+	}
 
-    public ViewExecuteParam(List<String> groupList,
+	public ViewExecuteParam(List<Group> groupList,
 							List<Aggregator> aggregators,
 							List<Order> orders,
 							List<String> filterList,
@@ -52,18 +57,6 @@ public class ViewExecuteParam {
         this.cache = cache;
         this.expired = expired;
         this.nativeQuery = nativeQuery;
-    }
-
-    public List<String> getGroups() {
-        if (CollUtil.isNotEmpty(this.groups)) {
-            this.groups = groups.stream().filter(g -> !StringUtils.isEmpty(g)).collect(Collectors.toList());
-        }
-
-        if (CollUtil.isEmpty(this.groups)) {
-            return null;
-        }
-
-        return this.groups;
     }
 
     public List<String> getFilters() {
@@ -142,5 +135,13 @@ public class ViewExecuteParam {
 
     public static String getField(String field, String jdbcUrl, String dbVersion) {
         return field;
-    }
+	}
+
+	public List<String> getSqlGroups() {
+		List<String> sqlGroups = Lists.newArrayList();
+		if (CollUtil.isNotEmpty(this.groups)) {
+			sqlGroups = groups.stream().map(g -> g.getName()).collect(Collectors.toList());
+		}
+		return sqlGroups;
+	}
 }

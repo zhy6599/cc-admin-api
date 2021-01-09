@@ -134,7 +134,7 @@ public class ViewServiceImpl extends ServiceImpl<ViewMapper, View> implements IV
 		STGroup stg = new STGroupFile(Constants.SQL_TEMPLATE);
 		ST st = stg.getInstanceOf("querySql");
 		st.add("nativeQuery", executeParam.isNativeQuery());
-		st.add("groups", executeParam.getGroups());
+		st.add("groups", executeParam.getSqlGroups());
 		if (executeParam.isNativeQuery()) {
 			st.add("aggregators", executeParam.getAggregators());
 		} else {
@@ -268,11 +268,70 @@ public class ViewServiceImpl extends ServiceImpl<ViewMapper, View> implements IV
 	}
 
 	@Override
+	public Map<String, Object> getTableData(String id, ViewExecuteParam executeParam) {
+		Map<String, Object> resultMap = Maps.newHashMap();
+		Page<Map<String, Object>> resultPage = getData(id, executeParam);
+		List<Map<String, Object>> records = resultPage.getRecords();
+		List<Group> groups = executeParam.getGroups();
+		List<Aggregator> aggregators = executeParam.getAggregators();
+		List<Object> headList = Lists.newArrayList();
+		List<List<Object>> bodyList = Lists.newArrayList();
+		//水平显示
+		if (executeParam.getHorizontal()) {
+			for(Group group : groups){
+				headList.add(group.getDisplayName());
+			}
+			Map<String, List<Object>> map = Maps.newHashMap();
+			for (Aggregator aggregator : aggregators) {
+				List<Object> dataList = Lists.newArrayList();
+				dataList.add(aggregator.getDisplayName());
+				map.put(aggregator.getName(), dataList);
+			}
+			for (int i = 0; i < records.size(); i++) {
+				Map<String, Object> record = records.get(i);
+				for(Group group : groups){
+					headList.add(record.get(group.getName()));
+				}
+				for (Aggregator aggregator : aggregators) {
+					map.get(aggregator.getName()).add(record.get(aggregator.getName()));
+				}
+			}
+			for (Aggregator aggregator : aggregators) {
+				bodyList.add(map.get(aggregator.getName()));
+			}
+		} else {
+			for(Group group : groups){
+				headList.add(group.getDisplayName());
+			}
+			for (Aggregator aggregator : aggregators) {
+				headList.add(aggregator.getDisplayName());
+
+			}
+			for (int i = 0; i < records.size(); i++) {
+				Map<String, Object> record = records.get(i);
+				List<Object> dataList = Lists.newArrayList();
+				for(Group group : groups){
+					dataList.add(record.get(group.getName()));
+				}
+				for (Aggregator aggregator : aggregators) {
+					dataList.add(record.get(aggregator.getName()));
+				}
+				bodyList.add(dataList);
+			}
+		}
+		resultMap.put("head", headList);
+		resultMap.put("body", bodyList);
+		return resultMap;
+	}
+
+	@Override
 	public Map<String, Object> getChartData(String id, ViewExecuteParam executeParam) {
 		Map<String, Object> resultMap = Maps.newHashMap();
 		if ("".equals(executeParam.getType())) {
 		} else if ("pie".equals(executeParam.getType())) {
 			resultMap = getPieData(id, executeParam);
+		} else if ("donut".equals(executeParam.getType())) {
+			resultMap = getDonutData(id, executeParam);
 		} else if ("radar".equals(executeParam.getType())) {
 			resultMap = getRadarData(id, executeParam);
 		} else if ("funnel".equals(executeParam.getType())) {
@@ -283,9 +342,75 @@ public class ViewServiceImpl extends ServiceImpl<ViewMapper, View> implements IV
 			resultMap = getGaugeData(id, executeParam);
 		} else if ("text".equals(executeParam.getType())) {
 			resultMap = getTextData(id, executeParam);
+		} else if ("maps".equals(executeParam.getType())) {
+			resultMap = getMapsData(id, executeParam);
 		} else {
 			resultMap = getLineData(id, executeParam);
 		}
+		return resultMap;
+	}
+
+	private Map<String, Object> getDonutData(String id, ViewExecuteParam executeParam) {
+		Page<Map<String, Object>> resultPage = getData(id, executeParam);
+		List<Map<String, Object>> records = resultPage.getRecords();
+		Map<String, Object> resultMap = Maps.newHashMap();
+		List<String> legend = Lists.newArrayList();
+		List<Group> groups = executeParam.getGroups();
+		List<Aggregator> aggregators = executeParam.getAggregators();
+		//一个指标对应一个Data
+		Map<String, SeriesData> seriesDataMap = Maps.newHashMap();
+		List<PieData> seriesDataList = Lists.newArrayList();
+		for (Aggregator aggregator : aggregators) {
+			legend.add(aggregator.getDisplayName());
+		}
+		for (int i = 0; i < records.size(); i++) {
+			Map<String, Object> record = records.get(i);
+			for (Aggregator aggregator : aggregators) {
+				seriesDataList.add(new PieData(String.valueOf(record.get(groups.get(0).getName())), record.get(aggregator.getName())));
+			}
+
+		}
+		resultMap.put("legend", legend);
+		resultMap.put("seriesDataList", seriesDataList);
+		return resultMap;
+	}
+
+	private Map<String, Object> getMapsData(String id, ViewExecuteParam executeParam) {
+		Page<Map<String, Object>> resultPage = getData(id, executeParam);
+		Map<String, Object> resultMap = Maps.newHashMap();
+		List<Map<String, Object>> dataList = resultPage.getRecords();
+		List<Map<String, Object>> resultList = Lists.newArrayList();
+		List<Aggregator> aggregatorList = executeParam.getAggregators();
+		double min = 0;
+		double max = 100;
+		List<Group> groups = executeParam.getGroups();
+		for (int i = 0; i < dataList.size(); i++) {
+			Map<String, Object> record = dataList.get(i);
+			Map<String, Object> m = Maps.newHashMap();
+			if(groups.size()>0){
+				m.put("name", record.get(groups.get(0).getName()));
+			}
+
+			if(aggregatorList.size()>0){
+				Aggregator aggregator = aggregatorList.get(0);
+				double value = Double.parseDouble(String.valueOf(record.get(aggregator.getName())));
+				m.put("value", value);
+				if (min > value) {
+					min = value;
+				}
+				if (value > max) {
+					max = value;
+				}
+			}
+			resultList.add(m);
+
+		}
+		if (max > 100) {
+			max = ((int)((max+100)/100))*100;
+		}
+		resultMap.put("min", min);
+		resultMap.put("max", max);
+		resultMap.put("dataList", dataList);
 		return resultMap;
 	}
 
@@ -316,7 +441,7 @@ public class ViewServiceImpl extends ServiceImpl<ViewMapper, View> implements IV
 		Page<Map<String, Object>> resultPage = getData(id, executeParam);
 		List<Map<String, Object>> records = resultPage.getRecords();
 		Map<String, Object> resultMap = Maps.newHashMap();
-		List<String> groups = executeParam.getGroups();
+		List<Group> groups = executeParam.getGroups();
 		List<Aggregator> aggregators = executeParam.getAggregators();
 		List<PieData> dataList = Lists.newArrayList();
 		double min = 0;
@@ -325,7 +450,7 @@ public class ViewServiceImpl extends ServiceImpl<ViewMapper, View> implements IV
 			Map<String, Object> record = records.get(i);
 			for (Aggregator aggregator : aggregators) {
 				double value = Double.parseDouble(String.valueOf(record.get(aggregator.getName())));
-				dataList.add(new PieData(String.valueOf(record.get(groups.get(0))), record.get(aggregator.getName())));
+				dataList.add(new PieData(String.valueOf(record.get(groups.get(0).getName())), record.get(aggregator.getName())));
 				if (min > value) {
 					min = value;
 				}
@@ -348,13 +473,13 @@ public class ViewServiceImpl extends ServiceImpl<ViewMapper, View> implements IV
 		Page<Map<String, Object>> resultPage = getData(id, executeParam);
 		List<Map<String, Object>> records = resultPage.getRecords();
 		Map<String, Object> resultMap = Maps.newHashMap();
-		List<String> groups = executeParam.getGroups();
+		List<Group> groups = executeParam.getGroups();
 		List<Aggregator> aggregators = executeParam.getAggregators();
 		List<PieData> dataList = Lists.newArrayList();
 		for (int i = 0; i < records.size(); i++) {
 			Map<String, Object> record = records.get(i);
 			for (Aggregator aggregator : aggregators) {
-				dataList.add(new PieData(String.valueOf(record.get(groups.get(0))), record.get(aggregator.getName())));
+				dataList.add(new PieData(String.valueOf(record.get(groups.get(0).getName())), record.get(aggregator.getName())));
 			}
 
 		}
@@ -369,7 +494,7 @@ public class ViewServiceImpl extends ServiceImpl<ViewMapper, View> implements IV
 		List<String> legend = Lists.newArrayList();
 		List<String> xAxisData = Lists.newArrayList();
 		List<String> yAxisData = Lists.newArrayList();
-		List<String> groups = executeParam.getGroups();
+		List<Group> groups = executeParam.getGroups();
 		List<Aggregator> aggregators = executeParam.getAggregators();
 		//一个指标对应一个Data
 		Map<String, SeriesData> seriesDataMap = Maps.newHashMap();
@@ -385,9 +510,9 @@ public class ViewServiceImpl extends ServiceImpl<ViewMapper, View> implements IV
 		for (int i = 0; i < records.size(); i++) {
 			Map<String, Object> record = records.get(i);
 			for (Aggregator aggregator : aggregators) {
-				seriesDataMap.get(aggregator.getName()).getDataList().add(new PieData(String.valueOf(record.get(groups.get(0))), record.get(aggregator.getName())));
+				seriesDataMap.get(aggregator.getName()).getDataList().add(new PieData(String.valueOf(record.get(groups.get(0).getName())), record.get(aggregator.getName())));
 			}
-			legend.add(String.valueOf(record.get(groups.get(0))));
+			legend.add(String.valueOf(record.get(groups.get(0).getName())));
 
 		}
 		resultMap.put("legend", legend);
@@ -400,7 +525,7 @@ public class ViewServiceImpl extends ServiceImpl<ViewMapper, View> implements IV
 		List<Map<String, Object>> records = resultPage.getRecords();
 		Map<String, Object> resultMap = Maps.newHashMap();
 		List<String> legend = Lists.newArrayList();
-		List<String> groups = executeParam.getGroups();
+		List<Group> groups = executeParam.getGroups();
 		List<Aggregator> aggregators = executeParam.getAggregators();
 		//一个指标对应一个Data
 		Map<String, SeriesData> seriesDataMap = Maps.newHashMap();
@@ -419,7 +544,7 @@ public class ViewServiceImpl extends ServiceImpl<ViewMapper, View> implements IV
 			for (Aggregator aggregator : aggregators) {
 				seriesDataMap.get(aggregator.getName()).getDataList().add(record.get(aggregator.getName()));
 			}
-			indicator.add(ImmutableMap.of("name", record.get(groups.get(0))));
+			indicator.add(ImmutableMap.of("name", record.get(groups.get(0).getName())));
 
 		}
 		resultMap.put("legend", legend);
@@ -433,7 +558,7 @@ public class ViewServiceImpl extends ServiceImpl<ViewMapper, View> implements IV
 		List<Map<String, Object>> records = resultPage.getRecords();
 		Map<String, Object> resultMap = Maps.newHashMap();
 		List<String> legend = Lists.newArrayList();
-		List<String> groups = executeParam.getGroups();
+		List<Group> groups = executeParam.getGroups();
 		List<Aggregator> aggregators = executeParam.getAggregators();
 		//一个指标对应一个Data
 		Map<String, SeriesData> seriesDataMap = Maps.newHashMap();
@@ -449,7 +574,7 @@ public class ViewServiceImpl extends ServiceImpl<ViewMapper, View> implements IV
 		for (int i = 0; i < records.size(); i++) {
 			Map<String, Object> record = records.get(i);
 			for (Aggregator aggregator : aggregators) {
-				seriesDataMap.get(aggregator.getName()).getDataList().add(new PieData(String.valueOf(record.get(groups.get(0))), record.get(aggregator.getName())));
+				seriesDataMap.get(aggregator.getName()).getDataList().add(new PieData(String.valueOf(record.get(groups.get(0).getName())), record.get(aggregator.getName())));
 			}
 
 		}
@@ -465,7 +590,7 @@ public class ViewServiceImpl extends ServiceImpl<ViewMapper, View> implements IV
 		List<String> legend = Lists.newArrayList();
 		List<String> xAxisData = Lists.newArrayList();
 		List<String> yAxisData = Lists.newArrayList();
-		List<String> groups = executeParam.getGroups();
+		List<Group> groups = executeParam.getGroups();
 		List<Aggregator> aggregators = executeParam.getAggregators();
 		//一个指标对应一个Data
 		Map<String, SeriesData> seriesDataMap = Maps.newHashMap();
@@ -484,7 +609,7 @@ public class ViewServiceImpl extends ServiceImpl<ViewMapper, View> implements IV
 			for (Aggregator aggregator : aggregators) {
 				seriesDataMap.get(aggregator.getName()).getDataList().add(record.get(aggregator.getName()));
 			}
-			xAxisData.add(String.valueOf(record.get(groups.get(0))));
+			xAxisData.add(String.valueOf(record.get(groups.get(0).getName())));
 
 		}
 		resultMap.put("legend", legend);

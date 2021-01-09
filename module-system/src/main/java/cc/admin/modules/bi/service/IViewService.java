@@ -31,4 +31,13 @@ public interface IViewService extends IService<View> {
 	 * @return
 	 */
 	Map<String, Object> getChartData(String id, ViewExecuteParam executeParam);
+
+	/**
+	 * 获取表格所需要的数据
+	 *
+	 * @param id
+	 * @param executeParam
+	 * @return
+	 */
+	Map<String, Object> getTableData(String id, ViewExecuteParam executeParam);
 }

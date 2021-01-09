@@ -29,12 +29,6 @@ buildNumber.properties
 # macOS
 .DS_Store
  
-# Package Files
-*.jar
-*.war
-*.ear
-*.tar.gz
-*.rar
  
 # CMake
 cmake-build-debug/

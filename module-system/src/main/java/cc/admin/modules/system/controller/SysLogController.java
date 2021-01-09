@@ -45,8 +45,8 @@ public class SysLogController {
 	 * @return
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public Result<IPage<SysLog>> queryPageList(SysLog syslog, @RequestParam(name="page", defaultValue="1") Integer pageNo,
-											   @RequestParam(name="rowsPerPage", defaultValue="10") Integer pageSize, HttpServletRequest req) {
+	public Result<IPage<SysLog>> queryPageList(SysLog syslog, @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+											   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize, HttpServletRequest req) {
 		Result<IPage<SysLog>> result = new Result<IPage<SysLog>>();
 		QueryWrapper<SysLog> queryWrapper = QueryGenerator.initQueryWrapper(syslog, req.getParameterMap());
 		Page<SysLog> page = new Page<SysLog>(pageNo, pageSize);

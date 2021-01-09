@@ -62,6 +62,7 @@ public class ScreenController extends BaseController<Screen, IScreenService> {
 		if (StrUtil.isNotEmpty(catalog)) {
 			queryWrapper.inSql("catalog_id", String.format("select b.id from sys_catalog a, sys_catalog b where a.id='%s' and a.type='BiScreen' and a.lft <= b.lft and a.rgh >= b.rgh", catalog));
 		}
+		queryWrapper.orderByDesc("create_time");
 
 		Page<Screen> page = new Page<Screen>(pageNo, pageSize);
 		IPage<Screen> pageList = screenService.page(page, queryWrapper);
