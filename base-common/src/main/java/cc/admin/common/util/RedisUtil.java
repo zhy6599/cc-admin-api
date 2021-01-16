@@ -1,15 +1,15 @@
 package cc.admin.common.util;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * redis 工具类
@@ -17,6 +17,7 @@ import org.springframework.util.CollectionUtils;
  *
  */
 @Component
+@Slf4j
 public class RedisUtil {
 
 	@Autowired
@@ -139,7 +140,7 @@ public class RedisUtil {
 	 * 递增
 	 *
 	 * @param key 键
-	 * @param by  要增加几(大于0)
+	 * @param delta  要增加几(大于0)
 	 * @return
 	 */
 	public long incr(String key, long delta) {
@@ -153,7 +154,7 @@ public class RedisUtil {
 	 * 递减
 	 *
 	 * @param key 键
-	 * @param by  要减少几(小于0)
+	 * @param delta  要减少几(小于0)
 	 * @return
 	 */
 	public long decr(String key, long delta) {
@@ -463,7 +464,6 @@ public class RedisUtil {
 	 *
 	 * @param key   键
 	 * @param value 值
-	 * @param time  时间(秒)
 	 * @return
 	 */
 	public boolean lSet(String key, Object value) {
@@ -502,7 +502,6 @@ public class RedisUtil {
 	 *
 	 * @param key   键
 	 * @param value 值
-	 * @param time  时间(秒)
 	 * @return
 	 */
 	public boolean lSet(String key, List<Object> value) {
@@ -570,5 +569,29 @@ public class RedisUtil {
 			e.printStackTrace();
 			return 0;
 		}
+	}
+
+
+	/**
+	 * 查找匹配key
+	 *
+	 * @param pattern key
+	 * @return /
+	 */
+	public List<String> scan(String pattern) {
+		ScanOptions options = ScanOptions.scanOptions().match(pattern).build();
+		RedisConnectionFactory factory = redisTemplate.getConnectionFactory();
+		RedisConnection rc = Objects.requireNonNull(factory).getConnection();
+		Cursor<byte[]> cursor = rc.scan(options);
+		List<String> result = new ArrayList<>();
+		while (cursor.hasNext()) {
+			result.add(new String(cursor.next()));
+		}
+		try {
+			RedisConnectionUtils.releaseConnection(rc, factory);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return result;
 	}
 }

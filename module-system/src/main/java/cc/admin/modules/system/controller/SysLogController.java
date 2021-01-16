@@ -1,15 +1,15 @@
 package cc.admin.modules.system.controller;
 
-
+import cc.admin.common.api.vo.Result;
+import cc.admin.common.system.query.QueryGenerator;
+import cc.admin.common.util.IPUtils;
+import cc.admin.common.util.oConvertUtils;
 import cc.admin.modules.system.entity.SysLog;
 import cc.admin.modules.system.entity.SysRole;
 import cc.admin.modules.system.service.ISysLogService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import cc.admin.common.api.vo.Result;
-import cc.admin.common.system.query.QueryGenerator;
-import cc.admin.common.util.oConvertUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,8 +55,12 @@ public class SysLogController {
 		if(oConvertUtils.isNotEmpty(keyWord)) {
 			queryWrapper.like("log_content",keyWord);
 		}
+		queryWrapper.orderByDesc("create_time");
 		//创建时间/创建人的赋值
 		IPage<SysLog> pageList = sysLogService.page(page, queryWrapper);
+		pageList.getRecords().forEach(sysLog -> {
+			sysLog.setIpAddress(IPUtils.getLocalCityInfo(sysLog.getIp()));
+		});
 		log.info("查询当前页："+pageList.getCurrent());
 		log.info("查询当前页数量："+pageList.getSize());
 		log.info("查询结果数量："+pageList.getRecords().size());

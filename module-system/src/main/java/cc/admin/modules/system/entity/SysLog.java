@@ -1,16 +1,17 @@
 package cc.admin.modules.system.entity;
 
-import java.util.Date;
-
 import cc.admin.common.aspect.annotation.Dict;
-import org.springframework.format.annotation.DateTimeFormat;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <getPageFilterFields>
@@ -64,6 +65,12 @@ public class SysLog implements Serializable {
 	 * IP
 	 */
 	private String ip;
+
+	/**
+	 * IP对应地址
+	 */
+	@TableField(exist = false)
+	private String ipAddress;
 
 	/**
 	 * 请求参数

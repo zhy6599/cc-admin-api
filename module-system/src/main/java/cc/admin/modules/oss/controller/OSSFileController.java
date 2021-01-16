@@ -1,24 +1,20 @@
 package cc.admin.modules.oss.controller;
 
-import javax.servlet.http.HttpServletRequest;
-
+import cc.admin.common.api.vo.Result;
+import cc.admin.common.system.query.QueryGenerator;
+import cc.admin.modules.oss.entity.OSSFile;
 import cc.admin.modules.oss.service.IOSSFileService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import cc.admin.common.api.vo.Result;
-import cc.admin.common.system.query.QueryGenerator;
-import cc.admin.modules.oss.entity.OSSFile;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @Controller
@@ -44,7 +40,7 @@ public class OSSFileController {
 
 	@ResponseBody
 	@PostMapping("/upload")
-	//@RequiresRoles({"admin"})
+	@RequiresRoles({"admin"})
 	public Result upload(@RequestParam("file") MultipartFile multipartFile) {
 		Result result = new Result();
 		try {

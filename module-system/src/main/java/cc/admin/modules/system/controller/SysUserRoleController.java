@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -98,6 +99,7 @@ public class SysUserRoleController extends BaseController<SysUserRole, ISysUserR
 	@AutoLog(value = "用户角色表-通过id删除")
 	@ApiOperation(value = "用户角色表-通过id删除", notes = "用户角色表-通过id删除")
 	@DeleteMapping(value = "/delete")
+	@RequiresRoles({"admin"})
 	public Result<?> delete(@RequestParam(name = "userId", required = true) String userId,
 							@RequestParam(name = "roleId", required = true) String roleId) {
 		SysUserRole sysUserRole = new SysUserRole();
@@ -117,6 +119,7 @@ public class SysUserRoleController extends BaseController<SysUserRole, ISysUserR
 	@AutoLog(value = "用户角色表-批量删除")
 	@ApiOperation(value = "用户角色表-批量删除", notes = "用户角色表-批量删除")
 	@PostMapping(value = "/deleteBatch")
+	@RequiresRoles({"admin"})
 	public Result<?> deleteBatch(@RequestBody List<SysUserRole> sysUserRoleList) {
 		sysUserRoleList.forEach(sysUserRole -> {
 			QueryWrapper<SysUserRole> queryWrapper = new QueryWrapper(sysUserRole);
@@ -132,6 +135,7 @@ public class SysUserRoleController extends BaseController<SysUserRole, ISysUserR
 	 * @param sysUserRole
 	 */
 	@RequestMapping(value = "/exportXls")
+	@RequiresRoles({"admin"})
 	public ModelAndView exportXls(HttpServletRequest request, SysUserRole sysUserRole) {
 		return super.exportXls(request, sysUserRole, SysUserRole.class, "用户角色表");
 	}
@@ -144,6 +148,7 @@ public class SysUserRoleController extends BaseController<SysUserRole, ISysUserR
 	 * @return
 	 */
 	@RequestMapping(value = "/importExcel", method = RequestMethod.POST)
+	@RequiresRoles({"admin"})
 	public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
 		return super.importExcel(request, response, SysUserRole.class);
 	}

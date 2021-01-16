@@ -28,6 +28,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -184,6 +185,7 @@ public class SysDictController {
 	 * @功能：新增
 	 */
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
+	@RequiresRoles({"admin"})
 	public Result<SysDict> add(@RequestBody SysDict sysDict) {
 		Result<SysDict> result = new Result<SysDict>();
 		try {
@@ -204,6 +206,7 @@ public class SysDictController {
 	 * @功能：编辑
 	 */
 	@RequestMapping(value = "/edit", method = RequestMethod.PUT)
+	@RequiresRoles({"admin"})
 	public Result<SysDict> edit(@RequestBody SysDict sysDict) {
 		Result<SysDict> result = new Result<SysDict>();
 		SysDict sysdict = sysDictService.getById(sysDict.getId());
@@ -225,6 +228,7 @@ public class SysDictController {
 	 * @功能：删除
 	 */
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+	@RequiresRoles({"admin"})
 	@CacheEvict(value = CacheConstant.SYS_DICT_CACHE, allEntries = true)
 	public Result<SysDict> delete(@RequestParam(name = "id", required = true) String id) {
 		Result<SysDict> result = new Result<SysDict>();
@@ -243,6 +247,7 @@ public class SysDictController {
 	 * @功能：批量删除
 	 */
 	@RequestMapping(value = "/deleteBatch", method = RequestMethod.DELETE)
+	@RequiresRoles({"admin"})
 	@CacheEvict(value = CacheConstant.SYS_DICT_CACHE, allEntries = true)
 	public Result<SysDict> deleteBatch(@RequestParam(name = "ids", required = true) String ids) {
 		Result<SysDict> result = new Result<SysDict>();
@@ -280,6 +285,7 @@ public class SysDictController {
 	 * @param request
 	 */
 	@RequestMapping(value = "/exportXls")
+	@RequiresRoles({"admin"})
 	public ModelAndView exportXls(SysDict sysDict, HttpServletRequest request) {
 		// Step.1 组装查询条件
 		QueryWrapper<SysDict> queryWrapper = QueryGenerator.initQueryWrapper(sysDict, request.getParameterMap());
@@ -315,6 +321,7 @@ public class SysDictController {
 	 * @return
 	 */
 	@RequestMapping(value = "/importExcel", method = RequestMethod.POST)
+	@RequiresRoles({"admin"})
 	public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 		Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
@@ -453,6 +460,7 @@ public class SysDictController {
 	 * @return
 	 */
 	@RequestMapping(value = "/deletePhysic/{id}", method = RequestMethod.DELETE)
+	@RequiresRoles({"admin"})
 	public Result<?> deletePhysic(@PathVariable String id) {
 		try {
 			sysDictService.deleteOneDictPhysically(id);

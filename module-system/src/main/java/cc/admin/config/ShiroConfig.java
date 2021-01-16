@@ -47,6 +47,9 @@ public class ShiroConfig {
     @Value("${spring.redis.password}")
     private String redisPassword;
 
+	@Value("${spring.redis.database}")
+	private int database;
+
 	/**
 	 * Filter Chain定义说明
 	 *
@@ -67,7 +70,7 @@ public class ShiroConfig {
 			}
 		}
 
-		//cas验证登录
+		//cas验证登录   author  role user 记住我 perms  anon
 		filterChainDefinitionMap.put("/cas/client/validateLogin", "anon");
 		// 配置不会被拦截的链接 顺序判断
 		filterChainDefinitionMap.put("/sys/randomImage/**", "anon"); //登录验证码接口排除
@@ -132,7 +135,6 @@ public class ShiroConfig {
 		shiroFilterFactoryBean.setFilters(filterMap);
 		// <!-- 过滤链定义，从上向下顺序执行，一般将/**放在最为下边
 		filterChainDefinitionMap.put("/**", "jwt");
-
 		// 未授权界面返回JSON
 		shiroFilterFactoryBean.setUnauthorizedUrl("/sys/common/403");
 		shiroFilterFactoryBean.setLoginUrl("/sys/common/403");
@@ -219,6 +221,7 @@ public class ShiroConfig {
         RedisManager redisManager = new RedisManager();
 		redisManager.setHost(host);
 		redisManager.setPort(oConvertUtils.getInt(port));
+		redisManager.setDatabase(database);
 		redisManager.setTimeout(0);
         if (!StringUtils.isEmpty(redisPassword)) {
             redisManager.setPassword(redisPassword);

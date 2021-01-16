@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -128,6 +129,7 @@ public class SysDictItemController implements InitializingBean {
 	 * @功能：新增
 	 */
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
+	@RequiresRoles({"admin"})
 	@CacheEvict(value = CacheConstant.SYS_DICT_CACHE, allEntries = true)
 	public Result<SysDictItem> add(@RequestBody SysDictItem sysDictItem) {
 		Result<SysDictItem> result = new Result<SysDictItem>();
@@ -148,6 +150,7 @@ public class SysDictItemController implements InitializingBean {
 	 * @功能：编辑
 	 */
 	@RequestMapping(value = "/edit", method = RequestMethod.PUT)
+	@RequiresRoles({"admin"})
 	@CacheEvict(value = CacheConstant.SYS_DICT_CACHE, allEntries = true)
 	public Result<SysDictItem> edit(@RequestBody SysDictItem sysDictItem) {
 		Result<SysDictItem> result = new Result<SysDictItem>();
@@ -200,6 +203,7 @@ public class SysDictItemController implements InitializingBean {
 	 * @功能：删除字典数据
 	 */
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+	@RequiresRoles({"admin"})
 	@CacheEvict(value = CacheConstant.SYS_DICT_CACHE, allEntries = true)
 	public Result<SysDictItem> delete(@RequestParam(name = "id", required = true) String id) {
 		Result<SysDictItem> result = new Result<SysDictItem>();
@@ -221,6 +225,7 @@ public class SysDictItemController implements InitializingBean {
 	 * @功能：批量删除字典数据
 	 */
 	@RequestMapping(value = "/deleteBatch", method = RequestMethod.DELETE)
+	@RequiresRoles({"admin"})
 	@CacheEvict(value = CacheConstant.SYS_DICT_CACHE, allEntries = true)
 	public Result<SysDictItem> deleteBatch(@RequestParam(name = "ids", required = true) String ids) {
 		Result<SysDictItem> result = new Result<SysDictItem>();

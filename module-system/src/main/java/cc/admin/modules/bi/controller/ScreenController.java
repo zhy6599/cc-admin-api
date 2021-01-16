@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -78,6 +79,7 @@ public class ScreenController extends BaseController<Screen, IScreenService> {
 	@AutoLog(value = "大屏-添加")
 	@ApiOperation(value="大屏-添加", notes="大屏-添加")
 	@PostMapping(value = "/add")
+	@RequiresRoles({"admin"})
 	public Result<?> add(@RequestBody Screen screen) {
 		screen.setId(IdUtil.fastUUID());
 		screenService.save(screen);
@@ -93,6 +95,7 @@ public class ScreenController extends BaseController<Screen, IScreenService> {
 	 @AutoLog(value = "大屏-复制")
 	 @ApiOperation(value="大屏-复制", notes="大屏-复制")
 	 @PostMapping(value = "/copy")
+	 @RequiresRoles({"admin"})
 	 public Result<?> copy(@RequestParam(name="id",required=true) String id,@RequestParam(name="name",required=true) String name) {
 		 Screen screen = screenService.getById(id);
 		 screen.setId(IdUtil.fastUUID());
@@ -110,6 +113,7 @@ public class ScreenController extends BaseController<Screen, IScreenService> {
 	@AutoLog(value = "大屏-编辑")
 	@ApiOperation(value="大屏-编辑", notes="大屏-编辑")
 	@PutMapping(value = "/edit")
+	@RequiresRoles({"admin"})
 	public Result<?> edit(@RequestBody Screen screen) {
 		Screen orgin = screenService.getById(screen.getId());
 		orgin.setName(screen.getName());
@@ -127,6 +131,7 @@ public class ScreenController extends BaseController<Screen, IScreenService> {
 	 @AutoLog(value = "大屏-更新配置信息")
 	 @ApiOperation(value="大屏-更新配置信息", notes="大屏-更新配置信息")
 	 @PutMapping(value = "/editConfig")
+	 @RequiresRoles({"admin"})
 	 public Result<?> editConfig(@RequestBody Screen screen) {
 		 Screen orgin = screenService.getById(screen.getId());
 		 orgin.setConfig(screen.getConfig());
@@ -143,6 +148,7 @@ public class ScreenController extends BaseController<Screen, IScreenService> {
 	@AutoLog(value = "大屏-通过id删除")
 	@ApiOperation(value="大屏-通过id删除", notes="大屏-通过id删除")
 	@DeleteMapping(value = "/delete")
+	@RequiresRoles({"admin"})
 	public Result<?> delete(@RequestParam(name="id",required=true) String id) {
 		screenService.removeById(id);
 		return Result.ok("删除成功!");
@@ -157,6 +163,7 @@ public class ScreenController extends BaseController<Screen, IScreenService> {
 	@AutoLog(value = "大屏-批量删除")
 	@ApiOperation(value="大屏-批量删除", notes="大屏-批量删除")
 	@DeleteMapping(value = "/deleteBatch")
+	@RequiresRoles({"admin"})
 	public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
 		this.screenService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.ok("批量删除成功!");
@@ -205,6 +212,7 @@ public class ScreenController extends BaseController<Screen, IScreenService> {
     * @param screen
     */
     @RequestMapping(value = "/exportXls")
+	@RequiresRoles({"admin"})
     public ModelAndView exportXls(HttpServletRequest request, Screen screen) {
         return super.exportXls(request, screen, Screen.class, "大屏");
     }
@@ -217,6 +225,7 @@ public class ScreenController extends BaseController<Screen, IScreenService> {
     * @return
     */
     @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
+	@RequiresRoles({"admin"})
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
         return super.importExcel(request, response, Screen.class);
     }

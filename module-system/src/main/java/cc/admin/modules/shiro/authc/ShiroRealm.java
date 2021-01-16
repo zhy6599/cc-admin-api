@@ -1,15 +1,5 @@
 package cc.admin.modules.shiro.authc;
 
-import java.util.Set;
-
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
-import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.authz.SimpleAuthorizationInfo;
-import org.apache.shiro.realm.AuthorizingRealm;
-import org.apache.shiro.subject.PrincipalCollection;
 import cc.admin.common.constant.CommonConstant;
 import cc.admin.common.system.api.ISysBaseAPI;
 import cc.admin.common.system.util.JwtUtil;
@@ -18,11 +8,20 @@ import cc.admin.common.util.RedisUtil;
 import cc.admin.common.util.SpringContextUtils;
 import cc.admin.common.util.oConvertUtils;
 import cc.admin.modules.system.service.ISysUserService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.realm.AuthorizingRealm;
+import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.Set;
 
 /**
  * @Description: 用户登录鉴权和获取用户授权
@@ -123,7 +122,7 @@ public class ShiroRealm extends AuthorizingRealm {
             throw new AuthenticationException("账号已被锁定,请联系管理员!");
         }
 		// 校验token是否超时失效 & 或者账号密码是否错误
-		if (!jwtTokenRefresh(token, username, loginUser.getPassword())) {
+		if (!jwtTokenRefresh(token, loginUser)) {
 			throw new AuthenticationException("Token失效，请重新登录!");
 		}
 
@@ -139,28 +138,21 @@ public class ShiroRealm extends AuthorizingRealm {
 	 * 注意： 前端请求Header中设置Authorization保持不变，校验有效性以缓存中的token为准。
      *       用户过期时间 = Jwt有效时间 * 2。
 	 *
-	 * @param userName
-	 * @param passWord
+	 * @param token
+	 * @param loginUser
 	 * @return
 	 */
-	public boolean jwtTokenRefresh(String token, String userName, String passWord) {
+	public boolean jwtTokenRefresh(String token,LoginUser loginUser) {
 		String cacheToken = String.valueOf(redisUtil.get(CommonConstant.PREFIX_USER_TOKEN + token));
 		if (oConvertUtils.isNotEmpty(cacheToken)) {
 			// 校验token有效性
-			if (!JwtUtil.verify(cacheToken, userName, passWord)) {
-				String newAuthorization = JwtUtil.sign(userName, passWord);
+			if (!JwtUtil.verify(cacheToken, loginUser.getUsername(), loginUser.getPassword())) {
+				String newAuthorization = JwtUtil.sign(loginUser.getUsername(), loginUser.getPassword());
 				// 设置超时时间
 				redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, newAuthorization);
 				redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME *2 / 1000);
                 log.info("——————————用户在线操作，更新token保证不掉线—————————jwtTokenRefresh——————— "+ token);
 			}
-            //update-begin--Author:scott  Date:20191005  for：解决每次请求，都重写redis中 token缓存问题
-//			else {
-//				// 设置超时时间
-//				redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, cacheToken);
-//				redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME / 1000);
-//			}
-            //update-end--Author:scott  Date:20191005   for：解决每次请求，都重写redis中 token缓存问题
 			return true;
 		}
 		return false;

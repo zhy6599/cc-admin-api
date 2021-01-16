@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -54,6 +55,7 @@ public class BiMapController extends BaseController<BiMap, IBiMapService> {
 			@RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
 			HttpServletRequest req) {
 		QueryWrapper<BiMap> queryWrapper = QueryGenerator.initQueryWrapper(new BiMap(), req.getParameterMap());
+		queryWrapper.select("id","name");
 		if (StrUtil.isNotEmpty(key)) {
 		}
 		Page<BiMap> page = new Page<BiMap>(pageNo, pageSize);
@@ -70,6 +72,7 @@ public class BiMapController extends BaseController<BiMap, IBiMapService> {
 	@AutoLog(value = "地图管理-添加")
 	@ApiOperation(value = "地图管理-添加", notes = "地图管理-添加")
 	@PostMapping(value = "/add")
+	@RequiresRoles({"admin"})
 	public Result<?> add(@RequestBody BiMap biMap) {
 		biMap.setId(IdUtil.fastUUID());
 		biMapService.save(biMap);
@@ -85,6 +88,7 @@ public class BiMapController extends BaseController<BiMap, IBiMapService> {
 	@AutoLog(value = "地图管理-编辑")
 	@ApiOperation(value = "地图管理-编辑", notes = "地图管理-编辑")
 	@PutMapping(value = "/edit")
+	@RequiresRoles({"admin"})
 	public Result<?> edit(@RequestBody BiMap biMap) {
 		biMapService.updateById(biMap);
 		return Result.ok("编辑成功!");
@@ -99,6 +103,7 @@ public class BiMapController extends BaseController<BiMap, IBiMapService> {
 	@AutoLog(value = "地图管理-通过id删除")
 	@ApiOperation(value = "地图管理-通过id删除", notes = "地图管理-通过id删除")
 	@DeleteMapping(value = "/delete")
+	@RequiresRoles({"admin"})
 	public Result<?> delete(@RequestParam(name = "id", required = true) String id) {
 		biMapService.removeById(id);
 		return Result.ok("删除成功!");
@@ -113,6 +118,7 @@ public class BiMapController extends BaseController<BiMap, IBiMapService> {
 	@AutoLog(value = "地图管理-批量删除")
 	@ApiOperation(value = "地图管理-批量删除", notes = "地图管理-批量删除")
 	@DeleteMapping(value = "/deleteBatch")
+	@RequiresRoles({"admin"})
 	public Result<?> deleteBatch(@RequestParam(name = "ids", required = true) String ids) {
 		this.biMapService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.ok("批量删除成功！");
@@ -139,6 +145,7 @@ public class BiMapController extends BaseController<BiMap, IBiMapService> {
 	 * @param biMap
 	 */
 	@RequestMapping(value = "/exportXls")
+	@RequiresRoles({"admin"})
 	public ModelAndView exportXls(HttpServletRequest request, BiMap biMap) {
 		return super.exportXls(request, biMap, BiMap.class, "地图管理");
 	}
@@ -151,6 +158,7 @@ public class BiMapController extends BaseController<BiMap, IBiMapService> {
 	 * @return
 	 */
 	@RequestMapping(value = "/importExcel", method = RequestMethod.POST)
+	@RequiresRoles({"admin"})
 	public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
 		return super.importExcel(request, response, BiMap.class);
 	}

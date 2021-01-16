@@ -10,30 +10,21 @@ import cc.admin.modules.system.service.ISysDictService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import cc.admin.common.system.vo.*;
-import cc.admin.common.util.*;
-import cc.admin.modules.system.entity.*;
-import cc.admin.modules.system.mapper.*;
 import cc.admin.common.constant.CacheConstant;
 import cc.admin.common.constant.CommonConstant;
 import cc.admin.common.constant.DataBaseConstant;
 import cc.admin.common.constant.WebsocketConst;
 import cc.admin.common.exception.CcAdminException;
 import cc.admin.common.system.api.ISysBaseAPI;
-import cc.admin.common.system.vo.*;
-import cc.admin.common.util.*;
 import cc.admin.common.util.oss.OssBootUtil;
 import cc.admin.modules.message.entity.SysMessageTemplate;
 import cc.admin.modules.message.service.ISysMessageTemplateService;
 import cc.admin.modules.message.websocket.WebSocket;
-import cc.admin.modules.system.entity.*;
-import cc.admin.modules.system.mapper.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.BeanUtils;
@@ -107,7 +98,7 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 			//获取request
 			HttpServletRequest request = SpringContextUtils.getHttpServletRequest();
 			//设置IP地址
-			sysLog.setIp(IPUtils.getIpAddr(request));
+			sysLog.setIp(IPUtils.getIpAddress(request));
 		} catch (Exception e) {
 			sysLog.setIp("127.0.0.1");
 		}

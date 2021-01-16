@@ -1,17 +1,5 @@
 package cc.admin.modules.system.aspect;
 
-import java.lang.reflect.Method;
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.shiro.SecurityUtils;
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
-import org.aspectj.lang.reflect.MethodSignature;
 import cc.admin.common.aspect.annotation.AutoLog;
 import cc.admin.common.constant.CommonConstant;
 import cc.admin.common.system.vo.LoginUser;
@@ -19,11 +7,21 @@ import cc.admin.common.util.IPUtils;
 import cc.admin.common.util.SpringContextUtils;
 import cc.admin.modules.system.entity.SysLog;
 import cc.admin.modules.system.service.ISysLogService;
+import com.alibaba.fastjson.JSONObject;
+import org.apache.shiro.SecurityUtils;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson.JSONObject;
+import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
+import java.util.Date;
 
 
 /**
@@ -88,7 +86,7 @@ public class AutoLogAspect {
 		sysLog.setRequestParam(getReqestParams(request,joinPoint));
 
 		//设置IP地址
-		sysLog.setIp(IPUtils.getIpAddr(request));
+		sysLog.setIp(IPUtils.getIpAddress(request));
 
 		//获取登录用户信息
 		LoginUser sysUser = (LoginUser)SecurityUtils.getSubject().getPrincipal();

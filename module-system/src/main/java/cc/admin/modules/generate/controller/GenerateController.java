@@ -20,6 +20,7 @@ import com.google.common.base.CaseFormat;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -153,6 +154,7 @@ public class GenerateController extends BaseController<Generate, IGenerateServic
 	@AutoLog(value = "代码生成-同步表结构到数据库")
 	@ApiOperation(value = "代码生成-同步表结构到数据库", notes = "代码生成-同步表结构到数据库")
 	@GetMapping(value = "/syncTableToDb")
+	@RequiresRoles({"admin"})
 	public Result<?> syncTableToDb(@RequestParam(name = "id") String id,
 								   HttpServletRequest req) {
 		generateService.syncTableToDb(id);

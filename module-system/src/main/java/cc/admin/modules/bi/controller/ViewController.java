@@ -19,6 +19,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -190,6 +191,7 @@ public class ViewController extends BaseController<View, IViewService> {
 	@AutoLog(value = "bi_view-执行SQL查询数据")
 	@ApiOperation(value="bi_view-执行SQL查询数据", notes="bi_view-执行SQL查询数据")
 	@PostMapping(value = "/executeSql")
+	@RequiresRoles({"admin"})
 	public Result<?> executeSql(@RequestBody ViewExecuteSql executeSql) {
 		try {
 			PaginateWithQueryColumns result = viewService.executeSql(executeSql);
@@ -209,6 +211,7 @@ public class ViewController extends BaseController<View, IViewService> {
 	@AutoLog(value = "bi_view-添加")
 	@ApiOperation(value="bi_view-添加", notes="bi_view-添加")
 	@PostMapping(value = "/add")
+	@RequiresRoles({"admin"})
 	public Result<?> add(@RequestBody View view) {
 		view.setId(IdUtil.fastUUID());
 		viewService.save(view);
@@ -224,6 +227,7 @@ public class ViewController extends BaseController<View, IViewService> {
 	@AutoLog(value = "bi_view-编辑")
 	@ApiOperation(value="bi_view-编辑", notes="bi_view-编辑")
 	@PutMapping(value = "/edit")
+	@RequiresRoles({"admin"})
 	public Result<?> edit(@RequestBody View view) {
 		viewService.updateById(view);
 		return Result.ok("编辑成功!");
@@ -238,6 +242,7 @@ public class ViewController extends BaseController<View, IViewService> {
 	@AutoLog(value = "bi_view-通过id删除")
 	@ApiOperation(value="bi_view-通过id删除", notes="bi_view-通过id删除")
 	@DeleteMapping(value = "/delete")
+	@RequiresRoles({"admin"})
 	public Result<?> delete(@RequestParam(name="id",required=true) String id) {
 		viewService.removeById(id);
 		return Result.ok("删除成功!");
@@ -252,6 +257,7 @@ public class ViewController extends BaseController<View, IViewService> {
 	@AutoLog(value = "bi_view-批量删除")
 	@ApiOperation(value="bi_view-批量删除", notes="bi_view-批量删除")
 	@DeleteMapping(value = "/deleteBatch")
+	@RequiresRoles({"admin"})
 	public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
 		this.viewService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.ok("批量删除成功!");
@@ -281,6 +287,7 @@ public class ViewController extends BaseController<View, IViewService> {
     * @param view
     */
     @RequestMapping(value = "/exportXls")
+	@RequiresRoles({"admin"})
     public ModelAndView exportXls(HttpServletRequest request, View view) {
         return super.exportXls(request, view, View.class, "bi_view");
     }
@@ -293,6 +300,7 @@ public class ViewController extends BaseController<View, IViewService> {
     * @return
     */
     @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
+	@RequiresRoles({"admin"})
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
         return super.importExcel(request, response, View.class);
     }

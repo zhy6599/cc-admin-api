@@ -22,6 +22,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -120,6 +121,7 @@ public class SysDataSourceController extends BaseController<SysDataSource, ISysD
     @AutoLog(value = "多数据源管理-编辑")
     @ApiOperation(value = "多数据源管理-编辑", notes = "多数据源管理-编辑")
     @PutMapping(value = "/edit")
+	@RequiresRoles({"admin"})
     public Result<?> edit(@RequestBody SysDataSource sysDataSource) {
         SysDataSource d = sysDataSourceService.getById(sysDataSource.getId());
         DataSourceCachePool.removeCache(d.getId());
@@ -136,6 +138,7 @@ public class SysDataSourceController extends BaseController<SysDataSource, ISysD
     @AutoLog(value = "多数据源管理-通过id删除")
     @ApiOperation(value = "多数据源管理-通过id删除", notes = "多数据源管理-通过id删除")
     @DeleteMapping(value = "/delete")
+	@RequiresRoles({"admin"})
     public Result<?> delete(@RequestParam(name = "id") String id) {
         SysDataSource sysDataSource = sysDataSourceService.getById(id);
         DataSourceCachePool.removeCache(sysDataSource.getId());
@@ -152,6 +155,7 @@ public class SysDataSourceController extends BaseController<SysDataSource, ISysD
     @AutoLog(value = "多数据源管理-批量删除")
     @ApiOperation(value = "多数据源管理-批量删除", notes = "多数据源管理-批量删除")
     @DeleteMapping(value = "/deleteBatch")
+	@RequiresRoles({"admin"})
     public Result<?> deleteBatch(@RequestParam(name = "ids") String ids) {
         List<String> idList = Arrays.asList(ids.split(","));
         idList.forEach(item->{
