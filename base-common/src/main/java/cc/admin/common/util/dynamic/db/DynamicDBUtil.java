@@ -4,7 +4,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
 import cc.admin.common.exception.CcAdminException;
-import cc.admin.common.system.vo.DynamicDataSourceModel;
+import cc.admin.common.sys.vo.DynamicDataSourceModel;
 import cc.admin.common.util.ReflectHelper;
 import cc.admin.common.util.oConvertUtils;
 import org.springframework.jdbc.core.JdbcTemplate;

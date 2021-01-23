@@ -2,7 +2,7 @@ package cc.admin.common.util.dynamic.db;
 
 import org.apache.commons.lang.StringUtils;
 import cc.admin.common.constant.DataBaseConstant;
-import cc.admin.common.system.vo.DynamicDataSourceModel;
+import cc.admin.common.sys.vo.DynamicDataSourceModel;
 
 import java.text.MessageFormat;
 import java.util.Map;

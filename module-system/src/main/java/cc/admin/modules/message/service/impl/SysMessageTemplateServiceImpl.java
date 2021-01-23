@@ -1,6 +1,6 @@
 package cc.admin.modules.message.service.impl;
 
-import cc.admin.common.system.base.service.impl.BaseServiceImpl;
+import cc.admin.common.sys.base.service.impl.BaseServiceImpl;
 import cc.admin.modules.message.entity.SysMessageTemplate;
 import cc.admin.modules.message.mapper.SysMessageTemplateMapper;
 import cc.admin.modules.message.service.ISysMessageTemplateService;

@@ -1,7 +1,9 @@
 package cc.admin.modules.message.websocket;
 
-import com.alibaba.fastjson.JSONObject;
 import cc.admin.common.constant.WebsocketConst;
+import cc.admin.modules.monitor.service.ServerMonitorService;
+import cc.admin.modules.monitor.service.impl.ServerMonitorServiceImpl;
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -25,10 +27,13 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @ServerEndpoint("/websocket/{userId}") //此注解相当于设置访问URL
 public class WebSocket {
 
+	private ServerMonitorService serverMonitorService = new ServerMonitorServiceImpl();
+
     private Session session;
 
     private static CopyOnWriteArraySet<WebSocket> webSockets =new CopyOnWriteArraySet<>();
     private static Map<String,Session> sessionPool = new HashMap<String,Session>();
+
 
     @OnOpen
     public void onOpen(Session session, @PathParam(value="userId")String userId) {
@@ -53,9 +58,18 @@ public class WebSocket {
     @OnMessage
     public void onMessage(String message) {
     	log.debug("【websocket消息】收到客户端消息:"+message);
-    	JSONObject obj = new JSONObject();
-    	obj.put(WebsocketConst.MSG_CMD, WebsocketConst.CMD_CHECK);//业务类型
-    	obj.put(WebsocketConst.MSG_TXT, "心跳响应");//消息内容
+		JSONObject obj = new JSONObject();
+
+    	if(WebsocketConst.MSG_SERVER_INFO.equals(message)){
+			//服务器监控信息
+			obj.put(WebsocketConst.MSG_CMD, WebsocketConst.MSG_SERVER_INFO);
+			//消息内容
+			obj.put(WebsocketConst.MSG_TXT, serverMonitorService.getServerInfo());
+		}else if(WebsocketConst.CMD_CHECK.equals(message)){
+			obj.put(WebsocketConst.MSG_CMD, WebsocketConst.CMD_CHECK);//业务类型
+			obj.put(WebsocketConst.MSG_TXT, "心跳响应");//消息内容
+		}
+
     	session.getAsyncRemote().sendText(obj.toJSONString());
     }
 

@@ -1,8 +1,8 @@
 package cc.admin.modules.message.controller;
 
 import cc.admin.common.api.vo.Result;
-import cc.admin.common.system.base.controller.BaseController;
-import cc.admin.common.system.query.QueryGenerator;
+import cc.admin.common.sys.base.controller.BaseController;
+import cc.admin.common.sys.query.QueryGenerator;
 import cc.admin.modules.message.entity.SysMessage;
 import cc.admin.modules.message.service.ISysMessageService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;

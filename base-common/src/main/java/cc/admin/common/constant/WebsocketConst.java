@@ -18,6 +18,11 @@ public class WebsocketConst {
      */
     public static final String MSG_ID = "msgId";
 
+	/**
+	 * 消息json key:serverInfo 获取服务器信息
+	 */
+	public static final String MSG_SERVER_INFO = "serverInfo";
+
     /**
      * 消息json key:msgTxt
      */
@@ -31,7 +36,7 @@ public class WebsocketConst {
     /**
      * 消息类型 heartcheck
      */
-    public static final String CMD_CHECK = "heartcheck";
+    public static final String CMD_CHECK = "heartCheck";
 
     /**
      * 消息类型 user 用户消息

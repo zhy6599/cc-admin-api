@@ -107,7 +107,7 @@ public class YouBianCodeUtil {
 	 * @return
 	 */
 	private static String getStrNum(int num) {
-		String s = String.format("%0" + numLength + "getHexString", num);
+		String s = String.format("%0" + numLength + "d", num);
 		return s;
 	}
 
@@ -125,7 +125,7 @@ public class YouBianCodeUtil {
 	/**
 	 * 递增获取下个字母
 	 *
-	 * @param num
+	 * @param zimu
 	 * @return
 	 */
 	private static char getNextZiMu(char zimu) {
@@ -164,10 +164,5 @@ public class YouBianCodeUtil {
 			return cutcode;
 		}
 
-	}
-	public static void main(String[] args) {
-		// org.jeecgframework.core.util.LogUtil.info(getNextZiMu('C'));
-		// org.jeecgframework.core.util.LogUtil.info(getNextNum(8));
-	    // org.jeecgframework.core.util.LogUtil.info(cutYouBianCode("C99A01B01")[2]);
 	}
 }

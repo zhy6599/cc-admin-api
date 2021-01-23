@@ -3,7 +3,7 @@ package cc.admin.modules.quartz.controller;
 import cc.admin.common.api.vo.Result;
 import cc.admin.common.constant.CommonConstant;
 import cc.admin.common.exception.CcAdminException;
-import cc.admin.common.system.query.QueryGenerator;
+import cc.admin.common.sys.query.QueryGenerator;
 import cc.admin.common.util.ImportExcelUtil;
 import cc.admin.modules.quartz.entity.QuartzJob;
 import cc.admin.modules.quartz.service.IQuartzJobService;

@@ -2,7 +2,7 @@ package cc.admin.modules.generate.controller;
 
 import cc.admin.common.api.vo.Result;
 import cc.admin.common.aspect.annotation.AutoLog;
-import cc.admin.common.system.base.controller.BaseController;
+import cc.admin.common.sys.base.controller.BaseController;
 import cc.admin.modules.generate.entity.Generate;
 import cc.admin.modules.generate.model.GenerateContent;
 import cc.admin.modules.generate.model.GenerateForm;

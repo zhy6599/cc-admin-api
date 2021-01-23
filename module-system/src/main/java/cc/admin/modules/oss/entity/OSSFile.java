@@ -1,6 +1,6 @@
 package cc.admin.modules.oss.entity;
 
-import cc.admin.common.system.base.entity.BaseEntity;
+import cc.admin.common.sys.base.entity.BaseEntity;
 import cc.admin.poi.excel.annotation.Excel;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;

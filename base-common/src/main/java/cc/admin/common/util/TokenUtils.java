@@ -4,9 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import cc.admin.common.constant.CommonConstant;
-import cc.admin.common.system.api.ISysBaseAPI;
-import cc.admin.common.system.util.JwtUtil;
-import cc.admin.common.system.vo.LoginUser;
+import cc.admin.common.sys.api.ISysBaseAPI;
+import cc.admin.common.sys.util.JwtUtil;
+import cc.admin.common.sys.vo.LoginUser;
 
 import javax.servlet.http.HttpServletRequest;
 

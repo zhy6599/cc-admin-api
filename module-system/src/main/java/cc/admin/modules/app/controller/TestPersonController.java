@@ -2,8 +2,8 @@ package cc.admin.modules.app.controller;
 
 import cc.admin.common.api.vo.Result;
 import cc.admin.common.aspect.annotation.AutoLog;
-import cc.admin.common.system.base.controller.BaseController;
-import cc.admin.common.system.query.QueryGenerator;
+import cc.admin.common.sys.base.controller.BaseController;
+import cc.admin.common.sys.query.QueryGenerator;
 import cc.admin.modules.app.entity.TestPerson;
 import cc.admin.modules.app.service.ITestPersonService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;

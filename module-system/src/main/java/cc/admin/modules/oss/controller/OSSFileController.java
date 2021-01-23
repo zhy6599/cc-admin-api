@@ -1,7 +1,7 @@
 package cc.admin.modules.oss.controller;
 
 import cc.admin.common.api.vo.Result;
-import cc.admin.common.system.query.QueryGenerator;
+import cc.admin.common.sys.query.QueryGenerator;
 import cc.admin.modules.oss.entity.OSSFile;
 import cc.admin.modules.oss.service.IOSSFileService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;

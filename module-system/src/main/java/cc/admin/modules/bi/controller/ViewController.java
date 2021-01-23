@@ -2,8 +2,8 @@ package cc.admin.modules.bi.controller;
 
 import cc.admin.common.api.vo.Result;
 import cc.admin.common.aspect.annotation.AutoLog;
-import cc.admin.common.system.base.controller.BaseController;
-import cc.admin.common.system.query.QueryGenerator;
+import cc.admin.common.sys.base.controller.BaseController;
+import cc.admin.common.sys.query.QueryGenerator;
 import cc.admin.modules.bi.core.model.SourceTableInfo;
 import cc.admin.modules.bi.entity.View;
 import cc.admin.modules.bi.model.PaginateWithQueryColumns;
@@ -70,6 +70,7 @@ public class ViewController extends BaseController<View, IViewService> {
 		 if (StrUtil.isNotEmpty(catalog)) {
 			 queryWrapper.inSql("catalog_id", String.format("select b.id from sys_catalog a, sys_catalog b where a.id='%s' and a.type='BiView' and a.lft <= b.lft and a.rgh >= b.rgh", catalog));
 		 }
+		 queryWrapper.orderByDesc("create_time");
 		 Page<View> page = new Page<View>(pageNo, pageSize);
 		 IPage<View> pageList = viewService.page(page, queryWrapper);
 		 return Result.ok(pageList);

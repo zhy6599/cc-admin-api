@@ -1,13 +1,13 @@
 package cc.admin.modules.ngalain.controller;
 
 import cc.admin.modules.ngalain.service.NgAlainService;
-import cc.admin.modules.system.service.ISysDictService;
+import cc.admin.modules.sys.service.ISysDictService;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import cc.admin.common.api.vo.Result;
-import cc.admin.common.system.vo.DictModel;
-import cc.admin.common.system.vo.LoginUser;
+import cc.admin.common.sys.vo.DictModel;
+import cc.admin.common.sys.vo.LoginUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

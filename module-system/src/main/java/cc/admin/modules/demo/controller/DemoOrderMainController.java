@@ -2,8 +2,8 @@ package cc.admin.modules.demo.controller;
 
 import cc.admin.common.api.vo.Result;
 import cc.admin.common.aspect.annotation.AutoLog;
-import cc.admin.common.system.base.controller.BaseController;
-import cc.admin.common.system.query.QueryGenerator;
+import cc.admin.common.sys.base.controller.BaseController;
+import cc.admin.common.sys.query.QueryGenerator;
 import cc.admin.modules.demo.entity.DemoOrderMain;
 import cc.admin.modules.demo.service.IDemoOrderMainService;
 import cn.hutool.core.util.StrUtil;

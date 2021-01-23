@@ -1,6 +1,6 @@
 package cc.admin.modules.message.service;
 
-import cc.admin.common.system.base.service.BaseService;
+import cc.admin.common.sys.base.service.BaseService;
 import cc.admin.modules.message.entity.SysMessageTemplate;
 
 import java.util.List;

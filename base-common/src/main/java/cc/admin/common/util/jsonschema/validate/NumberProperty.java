@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cc.admin.common.system.vo.DictModel;
+import cc.admin.common.sys.vo.DictModel;
 import cc.admin.common.util.jsonschema.CommonProperty;
 
 import com.alibaba.fastjson.JSONObject;

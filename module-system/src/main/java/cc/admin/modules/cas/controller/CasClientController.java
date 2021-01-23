@@ -2,14 +2,14 @@ package cc.admin.modules.cas.controller;
 
 import cc.admin.common.api.vo.Result;
 import cc.admin.common.constant.CommonConstant;
-import cc.admin.common.system.util.JwtUtil;
+import cc.admin.common.sys.util.JwtUtil;
 import cc.admin.common.util.RedisUtil;
 import cc.admin.modules.cas.util.CASServiceUtil;
 import cc.admin.modules.cas.util.XmlUtils;
-import cc.admin.modules.system.entity.SysDepart;
-import cc.admin.modules.system.entity.SysUser;
-import cc.admin.modules.system.service.ISysDepartService;
-import cc.admin.modules.system.service.ISysUserService;
+import cc.admin.modules.sys.entity.SysDepart;
+import cc.admin.modules.sys.entity.SysUser;
+import cc.admin.modules.sys.service.ISysDepartService;
+import cc.admin.modules.sys.service.ISysUserService;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -79,6 +79,7 @@ public class CasClientController {
 	 		// 设置超时时间
 	 		redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, token);
 	 		redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME*2 / 1000);
+
 	  		//获取用户部门信息
 			JSONObject obj = new JSONObject();
 			List<SysDepart> departs = sysDepartService.queryUserDeparts(sysUser.getId());

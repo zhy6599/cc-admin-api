@@ -1,6 +1,6 @@
 package cc.admin.config.mybatis;
 
-import cc.admin.common.system.vo.LoginUser;
+import cc.admin.common.sys.vo.LoginUser;
 import cc.admin.common.util.oConvertUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.binding.MapperMethod.ParamMap;

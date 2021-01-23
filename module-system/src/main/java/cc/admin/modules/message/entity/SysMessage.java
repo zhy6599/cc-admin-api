@@ -1,7 +1,7 @@
 package cc.admin.modules.message.entity;
 
 import cc.admin.common.aspect.annotation.Dict;
-import cc.admin.common.system.base.entity.BaseEntity;
+import cc.admin.common.sys.base.entity.BaseEntity;
 import cc.admin.poi.excel.annotation.Excel;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;

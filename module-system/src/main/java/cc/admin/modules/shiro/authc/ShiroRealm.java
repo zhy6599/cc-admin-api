@@ -1,13 +1,13 @@
 package cc.admin.modules.shiro.authc;
 
 import cc.admin.common.constant.CommonConstant;
-import cc.admin.common.system.api.ISysBaseAPI;
-import cc.admin.common.system.util.JwtUtil;
-import cc.admin.common.system.vo.LoginUser;
+import cc.admin.common.sys.api.ISysBaseAPI;
+import cc.admin.common.sys.util.JwtUtil;
+import cc.admin.common.sys.vo.LoginUser;
 import cc.admin.common.util.RedisUtil;
 import cc.admin.common.util.SpringContextUtils;
 import cc.admin.common.util.oConvertUtils;
-import cc.admin.modules.system.service.ISysUserService;
+import cc.admin.modules.sys.service.ISysUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -151,6 +151,7 @@ public class ShiroRealm extends AuthorizingRealm {
 				// 设置超时时间
 				redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, newAuthorization);
 				redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME *2 / 1000);
+				redisUtil.expire(CommonConstant.PREFIX_ONLINE_USER + token, JwtUtil.EXPIRE_TIME * 2 / 1000);
                 log.info("——————————用户在线操作，更新token保证不掉线—————————jwtTokenRefresh——————— "+ token);
 			}
 			return true;
