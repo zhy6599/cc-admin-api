@@ -245,6 +245,7 @@ public class FreemarkerUtil {
 	}
 
 	public static Map<String, String> generateCode(GenerateForm generateForm, Generate sysGenerate) {
+		FileUtil.del(PATH);
 		Map<String, String> result = Maps.newHashMap();
 		Map<String, Object> map = Maps.newHashMap();
 		String content = sysGenerate.getContent();
@@ -259,11 +260,11 @@ public class FreemarkerUtil {
 		initMap(sysGenerate.getName(), content, map);
 		//这里设置下分类表相关参数
 		if ("catalog".equalsIgnoreCase(sysGenerate.getTableType())) {
-			map.put("pageClass", "row");
-			map.put("viewCatalog", String.format("<viewcatalog class=\"q-mt-sm q-mb-sm q-ml-sm\" type=\"%s\" @select=\"selectCatalog\" />", generateForm.getClassName()));
+			map.put("pageClass", "cc-admin row");
+			map.put("viewCatalog", String.format("<viewcatalog class=\"q-mt-sm q-mb-sm q-ml-sm\" type=\"%s\" @select=\"selectCatalog\" v-if=\"this.$q.screen.gt.md\" />", generateForm.getClassName()));
 			map.put("catalogInput", String.format("<catalogselect :form.sync=\"form\" type=\"%s\" />", generateForm.getClassName()));
 		} else {
-			map.put("pageClass", "column");
+			map.put("pageClass", "cc-admin");
 		}
 		map.put("bussiPackage", "cc.admin.modules");
 		map.put("entityPackage", generateForm.getPackageName());

@@ -1,65 +1,9 @@
 <template>
     <q-page class="${pageClass}">
         ${viewCatalog!''}
-        <div class="col column view_card shadow-2 q-pa-md q-ma-sm">
+        <div class="col bg-white shadow-2 q-pa-md q-ma-sm">
         <#if generate.isSimpleQuery == "0">
-            <div class="row items-center justify-start q-mb-md">
-                    <#list fmColumnList as fm>
-                        <#if fm.isQuery =='1'>
-                            <div class="row items-center q-mb-md col-3">
-                                <span class="q-ml-md">${fm.name}：</span>
-                            <#if fm.dataType =='date'>
-                                <q-field outlined dense label="${fm.name}" v-model="searchForm.${fm.code}" class="col">
-                                    <template v-slot:control>
-                                        {{searchForm.${fm.code}}}
-                                    </template>
-                                    <template v-slot:append>
-                                        <q-btn flat dense round color="primary" icon="today">
-                                            <q-popup-proxy>
-                                                <q-date v-model="searchForm.${fm.code}" mask="YYYY-MM-DD"/>
-                                            </q-popup-proxy>
-                                        </q-btn>
-                                    </template>
-                                </q-field>
-                            <#elseif fm.dataType =='datetime'>
-                                      <q-field outlined dense v-model="searchForm.${fm.code}" class="col">
-                                          <template v-slot:control>
-                                              {{searchForm.${fm.code}}}
-                                          </template>
-                                          <template v-slot:append>
-                                              <q-btn flat dense round color="primary" icon="schedule">
-                                                  <q-popup-proxy>
-                                                      <div class="row">
-                                                          <q-date flat square v-model="searchForm.${fm.code}" mask="YYYY-MM-DD HH:mm:ss"/>
-                                                          <q-time flat square v-model="searchForm.${fm.code}" mask="YYYY-MM-DD HH:mm:ss"/>
-                                                      </div>
-                                                  </q-popup-proxy>
-                                              </q-btn>
-                                          </template>
-                                      </q-field>
-                            <#else>
-                                <#if fm.sysDicCode == "" && fm.dicTable == "">
-                                      <q-input outlined dense v-model="searchForm.${fm.code}" type="${fm.cmpType}"  class="col" />
-                                <#else >
-                                      <q-select outlined dense emit-value v-model="searchForm.${fm.code}" map-options :options="${fm.optionsName}"  class="col"/>
-                                </#if>
-                            </#if>
-                            </div>
-                        </#if>
-                    </#list>
-                <div class="row items-center q-mb-md col-3 q-ml-md">
-                    <q-btn
-                            color="primary"
-                            label="搜索"
-                            icon="search"
-                            class="on-left"
-                            @click="query()"
-                            :loading="loading"
-                            unelevated
-                    />
-                    <q-btn label="重置" icon="search_off" color="primary" outline @click="searchReset" />
-                </div>
-            </div>
+            <#include "include/queryForm.ftl" />
         </#if>
             <q-table flat color="primary" class="cross_table" separator="cell"
                      :columns="columns" :data="list" row-key="id"
@@ -70,64 +14,16 @@
                      :loading="loading"
                      selection="multiple"
                      :selected.sync="selected">
-            <#if generate.isSimpleQuery == "1">
-                <template #top-left>
-                    <div class="row no-wrap">
-                        <div class="row items-center">
-                            <q-input
 
-                                    outlined
-                                    dense
-                                    placeholder="请输入关键字搜索"
-                                    class="on-left"
-                                    @input="query"
-                                    debounce="500"
-                                    v-model="key"
-                            >
-                                <template #append>
-                                    <q-btn flat round icon="search" color="primary" @click="query" :loading="loading">
-                                        <q-tooltip>搜索</q-tooltip>
-                                    </q-btn>
-                                </template>
-                            </q-input>
-                        </div>
+                <template v-slot:top="table">
+                    <div class="row no-wrap full-width">
+<#if generate.isSimpleQuery == "1">
+    <#include "include/simpleQuery.ftl" />
+</#if>
+                        <q-space />
+    <#include "include/tableOptBtn.ftl" />
                     </div>
                 </template>
-            </#if>
-                <template #top-right="table">
-                    <q-btn-group outline>
-                        <q-btn outline icon="add" color="primary" label="新建${geForm.moduleName}" @click="add" />
-                        <q-btn
-                                outline
-                                color="primary"
-                                label="切换全屏"
-                                @click="table.toggleFullscreen"
-                                :icon="table.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-                        />
-                        <q-btn-dropdown outline color="primary" label="自选列" icon="view_list">
-                            <q-list>
-                                <q-item tag="label" v-for="item in columns" :key="item.name">
-                                    <q-item-section avatar>
-                                        <q-checkbox v-model="group" :val="item.name" />
-                                    </q-item-section>
-                                    <q-item-section>
-                                        <q-item-label>{{item.label}}</q-item-label>
-                                    </q-item-section>
-                                </q-item>
-                            </q-list>
-                        </q-btn-dropdown>
-                        <q-btn
-                                :disable="selected.length === 0"
-                                outline
-                                color="primary"
-                                label="批量删除"
-                                @click="showConfirm()"
-                                icon="mdi-delete-variant"
-                        />
-                    </q-btn-group>
-                </template>
-
-
 <#list fmColumnList as fm>
     <#if fm.sysDicCode == "" && fm.dicTable == "">
     <#else >
@@ -150,67 +46,7 @@
                 </template>
             </q-table>
         </div>
-        <q-dialog maximized flat persistent ref="dialog" position="right">
-            <q-form @submit="submit" class="dialog_card column">
-                <h5 class="view_title justify-between q-px-md">
-                    {{editType}}${geForm.moduleName}
-                    <q-btn dense outline round icon="clear" size="sm" v-close-popup/>
-                </h5>
-                <q-scroll-area class="col">
-                    <div class="row q-col-gutter-x-md dialog_form q-pa-md">
-                      <#list fmColumnList as fm>
-                          <#if fm.disForm == '1'>
-                          <div class="col-${generate.formType}">
-                              <h5><#if fm.mastInput =='1'||fm.mastInput =='2'><q-icon name="star" color="red"/></#if> ${fm.name}：</h5>
-                              <#if fm.dataType =='date'>
-                                  <q-field outlined dense v-model="form.${fm.code}" <#if fm.isReadonly =='1'>readonly</#if> ${fm.rule}>
-                                      <template v-slot:control>
-                                          {{form.${fm.code}}}
-                                      </template>
-                                      <template v-slot:append>
-                                          <q-btn flat dense round color="primary" icon="today">
-                                              <q-popup-proxy>
-                                                  <q-date v-model="form.${fm.code}" mask="YYYY-MM-DD"/>
-                                              </q-popup-proxy>
-                                          </q-btn>
-                                      </template>
-                                  </q-field>
-                              <#elseif fm.dataType =='datetime'>
-                                  <q-field outlined dense v-model="form.${fm.code}" <#if fm.isReadonly =='1'>readonly</#if>  ${fm.rule}>
-                                      <template v-slot:control>
-                                          {{form.${fm.code}}}
-                                      </template>
-                                      <template v-slot:append>
-                                          <q-btn flat dense round color="primary" icon="schedule">
-                                              <q-popup-proxy>
-                                                  <div class="row">
-                                                      <q-date flat square v-model="form.${fm.code}" mask="YYYY-MM-DD HH:mm:ss"/>
-                                                      <q-time flat square v-model="form.${fm.code}" mask="YYYY-MM-DD HH:mm:ss"/>
-                                                  </div>
-                                              </q-popup-proxy>
-                                          </q-btn>
-                                      </template>
-                                  </q-field>
-                              <#else>
-                                  <#if fm.code == "catalogId" && catalogInput??>
-                                    ${catalogInput}
-                                  <#elseif fm.sysDicCode == "" && fm.dicTable == "">
-                                  <q-input outlined dense v-model="form.${fm.code}" <#if fm.isReadonly =='1'>readonly</#if> type="${fm.cmpType}"   ${fm.rule}/>
-                                  <#else >
-                                  <q-select outlined dense emit-value v-model="form.${fm.code}" map-options :options="${fm.optionsName}" />
-                                  </#if>
-                              </#if>
-                          </div>
-                          </#if>
-                      </#list>
-                    </div>
-                </q-scroll-area>
-                <div class="row justify-end q-pa-md">
-                    <q-btn outline color="primary" label="取消" v-close-popup/>
-                    <q-btn unelevated color="primary" class="on-right" label="提交" type="submit"/>
-                </div>
-            </q-form>
-        </q-dialog>
+<#include "include/editDialog.ftl" />
         <confirm ref="confirmDialog" :msg="confirmMsg" @confirm="deleteBatch()" />
     </q-page>
 </template>
@@ -268,6 +104,10 @@ export default {
             ${fm.optionsContent},
         </#if>
     </#list>
+            showQuery: true,
+            headers: [{ name: 'Authorization', value: localStorage.Authorization }],
+            uploadUrl: `${r"$"}{process.env.SERVER_URL}${r"$"}{process.env.BASE_URL}/sys/common/upload`,
+            imgUrl: `${r"$"}{process.env.SERVER_URL}${r"$"}{process.env.BASE_URL}/sys/common/static`,
             url: {
             list: '/${requestMapping}/list',
                     add: '/${requestMapping}/add',

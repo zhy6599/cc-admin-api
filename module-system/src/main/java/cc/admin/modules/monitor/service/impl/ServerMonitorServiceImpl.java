@@ -142,34 +142,38 @@ public class ServerMonitorServiceImpl implements ServerMonitorService {
 	/**
 	 * 系统盘符信息
 	 */
-	public static JSONArray getSysFileInfo() {
-		JSONObject sysFileInfo;
+	public static JSONObject getSysFileInfo() {
+		JSONObject sysFileInfo = new JSONObject();
 		JSONArray sysFiles = new JSONArray();
 		FileSystem fileSystem = operatingSystem.getFileSystem();
 		OSFileStore[] fsArray = fileSystem.getFileStores();
+		long totalDist = 0;
 		for (OSFileStore fs : fsArray) {
-			sysFileInfo = new JSONObject();
+			JSONObject distInfo = new JSONObject();
 			//盘符路径
-			sysFileInfo.put("dirName", fs.getMount());
+			distInfo.put("dirName", fs.getMount());
 			//盘符类型
-			sysFileInfo.put("sysTypeName", fs.getType());
+			distInfo.put("sysTypeName", fs.getType());
 			//文件类型
-			sysFileInfo.put("typeName", fs.getName());
+			distInfo.put("typeName", fs.getName());
 			//总大小
-			sysFileInfo.put("total", formatByte(fs.getTotalSpace()));
+			totalDist += fs.getTotalSpace();
+			distInfo.put("total", formatByte(fs.getTotalSpace()));
 			//剩余大小
-			sysFileInfo.put("free", formatByte(fs.getUsableSpace()));
+			distInfo.put("free", formatByte(fs.getUsableSpace()));
 			//已经使用量
-			sysFileInfo.put("used", formatByte(fs.getTotalSpace() - fs.getUsableSpace()));
+			distInfo.put("used", formatByte(fs.getTotalSpace() - fs.getUsableSpace()));
 			if (fs.getTotalSpace() == 0) {
 				//资源的使用率
-				sysFileInfo.put("usage", 0);
+				distInfo.put("usage", 0);
 			} else {
-				sysFileInfo.put("usage", NumberUtil.round((fs.getTotalSpace() - fs.getUsableSpace()) * 1.0 / fs.getTotalSpace() * 100,2));
+				distInfo.put("usage", NumberUtil.round((fs.getTotalSpace() - fs.getUsableSpace()) * 1.0 / fs.getTotalSpace() * 100,2));
 			}
-			sysFiles.add(sysFileInfo);
+			sysFiles.add(distInfo);
 		}
-		return sysFiles;
+		sysFileInfo.put("diskTotal", formatByte(totalDist));
+		sysFileInfo.put("diskList", sysFiles);
+		return sysFileInfo;
 	}
 
 	/**

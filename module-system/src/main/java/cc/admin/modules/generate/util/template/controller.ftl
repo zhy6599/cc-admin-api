@@ -1,40 +1,25 @@
 package ${bussiPackage}.${entityPackage}.controller;
 
-import cn.hutool.core.util.StrUtil;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import cc.admin.common.api.vo.Result;
-import cc.admin.common.system.query.QueryGenerator;
 import cc.admin.common.aspect.annotation.AutoLog;
-import cc.admin.common.util.oConvertUtils;
-import ${bussiPackage}.${entityPackage}.entity.${entityName};
-import ${bussiPackage}.${entityPackage}.service.I${entityName}Service;
-import java.util.Date;
+import cc.admin.common.sys.base.controller.BaseController;
+import cc.admin.common.sys.query.QueryGenerator;
+import cc.admin.modules.demo.entity.DemoTest;
+import cc.admin.modules.demo.service.IDemoTestService;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lombok.extern.slf4j.Slf4j;
-import cc.admin.common.system.base.controller.BaseController;
-import cc.admin.poi.excel.ExcelImportUtil;
-import cc.admin.poi.excel.def.NormalExcelConstants;
-import cc.admin.poi.excel.entity.ExportParams;
-import cc.admin.poi.excel.entity.ImportParams;
-import cc.admin.poi.excel.view.BaseEntityExcelView;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
-import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 
  /**
  * @Description: ${geForm.moduleName}

@@ -3,6 +3,8 @@ package cc.admin.modules.generate.controller;
 import cc.admin.common.api.vo.Result;
 import cc.admin.common.aspect.annotation.AutoLog;
 import cc.admin.common.sys.base.controller.BaseController;
+import cc.admin.common.view.EntityViewConstants;
+import cc.admin.common.view.ZipEntityView;
 import cc.admin.modules.generate.entity.Generate;
 import cc.admin.modules.generate.model.GenerateContent;
 import cc.admin.modules.generate.model.GenerateForm;
@@ -27,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -337,4 +340,28 @@ public class GenerateController extends BaseController<Generate, IGenerateServic
 		return super.importExcel(request, response, Generate.class);
 	}
 
+
+	/**
+	 * 代码下载
+	 * @param id
+	 */
+	@RequestMapping(value = "/downloadCode")
+	public ModelAndView exportXls(@RequestParam(name = "id", required = true) String id) {
+
+
+		Generate generate = generateService.getById(id);
+		GenerateContent generateContent = JSONObject.parseObject(generate.getContent(), GenerateContent.class);
+		GenerateForm generateForm = generateContent.getGenerateForm();
+		generateForm.setId(id);
+		FreemarkerUtil.generateCode(generateForm, generate);
+
+		ModelAndView mv = new ModelAndView(new ZipEntityView());
+		String fileName = String.format("generate-%s.zip",String.valueOf(System.currentTimeMillis()));
+		mv.addObject(EntityViewConstants.FILE_NAME, fileName);
+		//这里是生成好的代码
+		mv.addObject(EntityViewConstants.SRC_PATH, FreemarkerUtil.PATH);
+		String tempPath =System.getProperty("java.io.tmpdir")+ File.separator;
+		mv.addObject(EntityViewConstants.ZIP_PATH, String.format("%s%s",tempPath, fileName));
+		return mv;
+	}
 }
