@@ -164,6 +164,22 @@ public class GenerateController extends BaseController<Generate, IGenerateServic
 		return Result.ok(generateService.syncTableById(id));
 	}
 
+
+	/**
+	 * 同步表结构-同步表结构到数据库
+	 *
+	 * @param id
+	 * @param req
+	 * @return
+	 */
+	@AutoLog(value = "代码生成-同步表结构到配置信息")
+	@ApiOperation(value = "代码生成-同步表结构到配置信息", notes = "代码生成-同步表结构到配置信息")
+	@GetMapping(value = "/syncTableToConfig")
+	@RequiresRoles({"admin"})
+	public Result<?> syncTableToConfig(@RequestParam(name = "id") String id,HttpServletRequest req) {
+		return Result.ok(generateService.syncTableToConfig(id));
+	}
+
 	/**
 	 * 获取表列信息
 	 *

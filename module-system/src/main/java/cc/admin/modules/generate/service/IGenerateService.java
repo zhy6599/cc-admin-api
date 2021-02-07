@@ -63,6 +63,13 @@ public interface IGenerateService extends IService<Generate> {
 	boolean syncTableToDb(String id);
 
 	/**
+	 *	将表结构同步到配置信息
+	 * @param id
+	 * @return
+	 */
+	String syncTableToConfig(String id);
+
+	/**
 	 * 是否和数据库同步
 	 * @param generate
 	 * @return
@@ -75,4 +82,5 @@ public interface IGenerateService extends IService<Generate> {
 	 * @return
 	 */
 	List<Map<String, String>> queryColumns(String id);
+
 }

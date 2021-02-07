@@ -53,6 +53,8 @@ public class SysDictItemController implements InitializingBean {
 		dictTableMap.put("demoOrderType", new DictTable("demo_order_type", "id", "name"));
 		dictTableMap.put("babyWord", new DictTable("baby_word", "id", "name"));
 		dictTableMap.put("sysDepart", new DictTable("sys_depart", "id", "depart_name"));
+		dictTableMap.put("mntApp", new DictTable("mnt_app", "id", "name"));
+		dictTableMap.put("mntServer", new DictTable("mnt_server", "id", "name"));
 
 	}
 

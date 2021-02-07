@@ -3491,6 +3491,98 @@ INSERT INTO `sys_user_role` VALUES ('1324595555887661058', 'f0019fdebedb443c98dc
 INSERT INTO `sys_user_role` VALUES ('1324595555879272449', 'f0019fdebedb443c98dcb17d88222c38', 'e51758fa916c881624b046d26bd09230');
 INSERT INTO `sys_user_role` VALUES ('1324595555887661057', 'f0019fdebedb443c98dcb17d88222c38', 'ee8626f80f7c2619917b6236f3a7f02b');
 
+
+-- ----------------------------
+-- Table structure for mnt_app
+-- ----------------------------
+DROP TABLE IF EXISTS `mnt_app`;
+CREATE TABLE `mnt_app`  (
+  `id` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '编号',
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '应用名称',
+  `upload_path` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '上传目录',
+  `deploy_path` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '部署路径',
+  `backup_path` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '备份路径',
+  `port` int(255) NULL DEFAULT NULL COMMENT '应用端口',
+  `start_script` varchar(4000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '启动脚本',
+  `deploy_script` varchar(4000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '部署脚本',
+  `catalog_id` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '分类目录',
+  `create_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '创建者',
+  `update_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '更新者',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建日期',
+  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '应用管理' ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Table structure for mnt_database
+-- ----------------------------
+DROP TABLE IF EXISTS `mnt_database`;
+CREATE TABLE `mnt_database`  (
+  `id` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '编号',
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '名称',
+  `jdbc_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'jdbc连接',
+  `user_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '账号',
+  `password` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '密码',
+  `catalog_id` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '分类目录',
+  `create_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '创建者',
+  `update_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '更新者',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '数据库管理' ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Table structure for mnt_deploy
+-- ----------------------------
+DROP TABLE IF EXISTS `mnt_deploy`;
+CREATE TABLE `mnt_deploy`  (
+  `id` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '编号',
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '名称',
+  `app_id` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '应用编号',
+  `server_id` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '服务器编号',
+  `catalog_id` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '分类目录',
+  `create_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '创建者',
+  `update_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '更新者',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `FK6sy157pseoxx4fmcqr1vnvvhy`(`app_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '部署管理' ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Table structure for mnt_deploy_history
+-- ----------------------------
+DROP TABLE IF EXISTS `mnt_deploy_history`;
+CREATE TABLE `mnt_deploy_history`  (
+  `id` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '编号',
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '应用名称',
+  `deploy_date` datetime(0) NOT NULL COMMENT '部署日期',
+  `deploy_user` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '部署用户',
+  `ip` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '服务器IP',
+  `deploy_id` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '部署编号',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '部署历史管理' ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Table structure for mnt_server
+-- ----------------------------
+DROP TABLE IF EXISTS `mnt_server`;
+CREATE TABLE `mnt_server`  (
+  `id` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '编号',
+  `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '名称',
+  `user_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '账号',
+  `ip` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'IP地址',
+  `password` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '密码',
+  `port` int(11) NULL DEFAULT NULL COMMENT '端口',
+  `catalog_id` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '分类目录',
+  `create_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '创建者',
+  `update_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '更新者',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_ip`(`ip`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '服务器管理' ROW_FORMAT = Compact;
+
 -- ----------------------------
 -- View structure for v_column_schema
 -- ----------------------------

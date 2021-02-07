@@ -247,6 +247,73 @@ public class GenerateServiceImpl extends ServiceImpl<GenerateMapper, Generate> i
 		return true;
 	}
 
+	@Override
+	public String syncTableToConfig(String id) {
+		try {
+			Generate generate = this.baseMapper.selectById(id);
+			String tableName = generate.getName();
+			List<ColumnSchema> columnList = getColumns(tableName);
+			//获取到内容，和数据库对比
+			String content = generate.getContent();
+			JSONObject contentObj = JSONObject.parseObject(content);
+			List<ColumnSchema> columnSchemaListNew = Lists.newArrayList();
+			List<PageColumn> pageColumnListNew = Lists.newArrayList();
+			List<RelateData> relateDataListNew = Lists.newArrayList();
+			System.out.println(content);
+
+			List<JSONObject> columnSchemaList = Lists.newArrayList();
+			List<JSONObject> pageColumnList = Lists.newArrayList();
+			List<JSONObject> relateDataList = Lists.newArrayList();
+			columnSchemaList = contentObj.getObject("columnSchemaList", columnSchemaList.getClass());
+			pageColumnList = contentObj.getObject("pageColumnList", columnSchemaList.getClass());
+			relateDataList = contentObj.getObject("relateDataList", columnSchemaList.getClass());
+
+			//以数据库的为准
+			for (ColumnSchema dbColumn : columnList){
+				columnSchemaListNew.add(dbColumn);
+				if (CollectionUtil.isNotEmpty(columnSchemaList)) {
+					boolean have = false;
+					for (JSONObject jsonObject : columnSchemaList) {
+						ColumnSchema columnSchema = JSONObject.toJavaObject(jsonObject, ColumnSchema.class);
+						if (dbColumn.getId().equals(columnSchema.getId())) {
+							have = true;
+						}
+					}
+					for (JSONObject jsonObject : pageColumnList) {
+						PageColumn pageColumn = JSONObject.toJavaObject(jsonObject, PageColumn.class);
+						if (dbColumn.getId().equals(pageColumn.getId())) {
+							pageColumn.setName(dbColumn.getName());
+							pageColumnListNew.add(pageColumn);
+						}
+					}
+					for (JSONObject jsonObject : relateDataList) {
+						RelateData relateData = JSONObject.toJavaObject(jsonObject, RelateData.class);
+						if (dbColumn.getId().equals(relateData.getId())) {
+							relateData.setName(dbColumn.getName());
+							relateDataListNew.add(relateData);
+						}
+					}
+					if (!have) {
+						PageColumn pageColumn = new PageColumn(dbColumn);
+						RelateData relateData = new RelateData(dbColumn);
+						pageColumnListNew.add(pageColumn);
+						relateDataListNew.add(relateData);
+					}
+				}
+			}
+			contentObj.put("columnSchemaList", columnSchemaListNew);
+			contentObj.put("pageColumnList", pageColumnListNew);
+			contentObj.put("relateDataList", relateDataListNew);
+			generate.setContent(contentObj.toJSONString());
+			this.baseMapper.updateById(generate);
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.info("Get connection failed:" + e.getMessage());
+		} finally {
+		}
+		return "同步成功";
+	}
+
 	private String getDropSql(Generate generate) {
 		String tableName = generate.getName();
 		StringBuffer sql = new StringBuffer();
