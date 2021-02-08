@@ -53,6 +53,15 @@ public class MntServer {
 	@Excel(name = "端口", width = 15)
     @ApiModelProperty(value = "端口")
 	private Integer port;
+	/**登录方式*/
+	@Excel(name = "登录方式", width = 15)
+    @Dict(dicCode = "login_type")
+    @ApiModelProperty(value = "登录方式")
+	private String loginType;
+	/**证书文件*/
+	@Excel(name = "证书文件", width = 15)
+    @ApiModelProperty(value = "证书文件")
+	private String keyFile;
 	/**分类目录*/
 	@Excel(name = "分类目录", width = 15)
 	@Dict(dicCode = "id",dicText = "name",dictTable = "sys_catalog")

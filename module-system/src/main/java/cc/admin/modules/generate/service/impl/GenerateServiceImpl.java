@@ -259,14 +259,17 @@ public class GenerateServiceImpl extends ServiceImpl<GenerateMapper, Generate> i
 			List<ColumnSchema> columnSchemaListNew = Lists.newArrayList();
 			List<PageColumn> pageColumnListNew = Lists.newArrayList();
 			List<RelateData> relateDataListNew = Lists.newArrayList();
+			List<ColumnCheck> columnCheckListNew = Lists.newArrayList();
 			System.out.println(content);
 
 			List<JSONObject> columnSchemaList = Lists.newArrayList();
 			List<JSONObject> pageColumnList = Lists.newArrayList();
 			List<JSONObject> relateDataList = Lists.newArrayList();
+			List<JSONObject> columnCheckList = Lists.newArrayList();
 			columnSchemaList = contentObj.getObject("columnSchemaList", columnSchemaList.getClass());
 			pageColumnList = contentObj.getObject("pageColumnList", columnSchemaList.getClass());
 			relateDataList = contentObj.getObject("relateDataList", columnSchemaList.getClass());
+			columnCheckList = contentObj.getObject("columnCheckList", columnSchemaList.getClass());
 
 			//以数据库的为准
 			for (ColumnSchema dbColumn : columnList){
@@ -293,17 +296,27 @@ public class GenerateServiceImpl extends ServiceImpl<GenerateMapper, Generate> i
 							relateDataListNew.add(relateData);
 						}
 					}
+					for (JSONObject jsonObject : columnCheckList) {
+						ColumnCheck columnCheck = JSONObject.toJavaObject(jsonObject, ColumnCheck.class);
+						if (dbColumn.getId().equals(columnCheck.getId())) {
+							columnCheck.setName(dbColumn.getName());
+							columnCheckListNew.add(columnCheck);
+						}
+					}
 					if (!have) {
 						PageColumn pageColumn = new PageColumn(dbColumn);
 						RelateData relateData = new RelateData(dbColumn);
+						ColumnCheck columnCheck = new ColumnCheck(dbColumn);
 						pageColumnListNew.add(pageColumn);
 						relateDataListNew.add(relateData);
+						columnCheckListNew.add(columnCheck);
 					}
 				}
 			}
 			contentObj.put("columnSchemaList", columnSchemaListNew);
 			contentObj.put("pageColumnList", pageColumnListNew);
 			contentObj.put("relateDataList", relateDataListNew);
+			contentObj.put("columnCheckList", columnCheckListNew);
 			generate.setContent(contentObj.toJSONString());
 			this.baseMapper.updateById(generate);
 		} catch (Exception e) {

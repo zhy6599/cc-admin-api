@@ -362,7 +362,7 @@ public class GenerateController extends BaseController<Generate, IGenerateServic
 	 * @param id
 	 */
 	@RequestMapping(value = "/downloadCode")
-	public ModelAndView exportXls(@RequestParam(name = "id", required = true) String id) {
+	public ModelAndView downloadCode(@RequestParam(name = "id", required = true) String id) {
 
 
 		Generate generate = generateService.getById(id);

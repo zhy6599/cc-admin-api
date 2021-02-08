@@ -31,7 +31,7 @@ public class ZipEntityView extends AbstractView {
 		Charset charset = Charsets.UTF_8;
 
 		File file = new File(zipPath);
-		ZipUtil.zip(srcPath, zipPath, charset, true);
+		ZipUtil.zip(srcPath, zipPath, charset, false);
 		byte[] fileData = FileUtils.readFileToByteArray(file);
 		try {
 			String headerKey = "Content-Disposition";
