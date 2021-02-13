@@ -1,20 +1,20 @@
 package cc.admin.modules.mnt.entity;
 
-import java.io.Serializable;
-import java.util.Date;
+import cc.admin.common.aspect.annotation.Dict;
+import cc.admin.poi.excel.annotation.Excel;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
-import cc.admin.poi.excel.annotation.Excel;
-import cc.admin.common.aspect.annotation.Dict;
+
+import java.util.Date;
 
 /**
  * @Description: 服务器管理
@@ -48,6 +48,7 @@ public class MntServer {
 	/**密码*/
 	@Excel(name = "密码", width = 15)
     @ApiModelProperty(value = "密码")
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
 	/**端口*/
 	@Excel(name = "端口", width = 15)
