@@ -58,4 +58,8 @@ public class WebsocketConst {
      */
     public static final String CMD_SIGN = "sign";
 
+	/**
+	 * 消息类型 stepStatus
+	 */
+	public static final String CMD_STEP_STATUS = "stepStatus";
 }

@@ -11,7 +11,7 @@ import cc.admin.modules.mnt.mapper.MntDeployMapper;
 import cc.admin.modules.mnt.service.IMntAppService;
 import cc.admin.modules.mnt.service.IMntDeployService;
 import cc.admin.modules.mnt.service.IMntServerService;
-import cc.admin.modules.sys.util.JSCHUtil;
+import cc.admin.modules.sys.util.ExecuteCmdForMntServer;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,9 +51,7 @@ public class MntDeployServiceImpl extends ServiceImpl<MntDeployMapper, MntDeploy
 	private boolean checkIsRunningStatus(int port,MntServer mntServer) {
 		String result = "";
 		try {
-			JSCHUtil jschUtil = new JSCHUtil(mntServer,uploadPath);
-			result = jschUtil.execCmd(String.format("fuser -n tcp %d", port));
-			jschUtil.clear();
+			result = ExecuteCmdForMntServer.executeCmd(mntServer, String.format("fuser -n tcp %d", port));
 		} catch (Exception e) {
 			log.error("连接服务器失败：",e);
 			return false;
@@ -71,7 +69,6 @@ public class MntDeployServiceImpl extends ServiceImpl<MntDeployMapper, MntDeploy
 
 			String appId = mntDeploy.getAppId();
 			MntApp mntApp = mntAppService.getById(appId);
-
 			sb.append("服务器:").append(mntServer.getName()).append("<br>应用:").append(mntApp.getName());
 			boolean result = checkIsRunningStatus(mntApp.getPort(),mntServer);
 			if (result) {

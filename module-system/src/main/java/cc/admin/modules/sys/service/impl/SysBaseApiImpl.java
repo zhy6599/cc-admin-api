@@ -1,7 +1,17 @@
 package cc.admin.modules.sys.service.impl;
 
+import cc.admin.common.constant.CacheConstant;
+import cc.admin.common.constant.CommonConstant;
+import cc.admin.common.constant.DataBaseConstant;
+import cc.admin.common.constant.WebsocketConst;
+import cc.admin.common.exception.CcAdminException;
+import cc.admin.common.sys.api.ISysBaseAPI;
 import cc.admin.common.sys.vo.*;
 import cc.admin.common.util.*;
+import cc.admin.common.util.oss.OssBootUtil;
+import cc.admin.modules.message.entity.SysMessageTemplate;
+import cc.admin.modules.message.service.ISysMessageTemplateService;
+import cc.admin.modules.message.websocket.WebSocket;
 import cc.admin.modules.sys.entity.*;
 import cc.admin.modules.sys.mapper.*;
 import cc.admin.modules.sys.service.ISysDataSourceService;
@@ -15,16 +25,6 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import cc.admin.common.constant.CacheConstant;
-import cc.admin.common.constant.CommonConstant;
-import cc.admin.common.constant.DataBaseConstant;
-import cc.admin.common.constant.WebsocketConst;
-import cc.admin.common.exception.CcAdminException;
-import cc.admin.common.sys.api.ISysBaseAPI;
-import cc.admin.common.util.oss.OssBootUtil;
-import cc.admin.modules.message.entity.SysMessageTemplate;
-import cc.admin.modules.message.service.ISysMessageTemplateService;
-import cc.admin.modules.message.websocket.WebSocket;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.BeanUtils;
@@ -116,7 +116,7 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 	}
 
 	@Override
-	@Cacheable(cacheNames=CacheConstant.SYS_USERS_CACHE, key="#username")
+	@Cacheable(cacheNames = CacheConstant.SYS_USERS_CACHE, key = "#username", unless = "#result == null")
 	public LoginUser getUserByName(String username) {
 		if(oConvertUtils.isEmpty(username)) {
 			return null;

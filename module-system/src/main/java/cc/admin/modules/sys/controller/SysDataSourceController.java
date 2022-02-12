@@ -10,6 +10,7 @@ import cc.admin.common.util.dynamic.db.DynamicDBUtil;
 import cc.admin.modules.sys.entity.SysDataSource;
 import cc.admin.modules.sys.service.ISysCatalogService;
 import cc.admin.modules.sys.service.ISysDataSourceService;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.DbUtil;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -111,6 +112,24 @@ public class SysDataSourceController extends BaseController<SysDataSource, ISysD
         sysDataSourceService.save(sysDataSource);
         return Result.ok("添加成功！");
     }
+
+	/**
+	 * 复制
+	 *
+	 * @param id
+	 * @param name
+	 * @return
+	 */
+	@AutoLog(value = "多数据源管理-复制")
+	@ApiOperation(value = "多数据源管理-复制", notes = "多数据源管理-复制")
+	@PostMapping(value = "/copy")
+	public Result<?> copy(@RequestParam(name = "id", required = true) String id, @RequestParam(name = "name", required = true) String name) {
+		SysDataSource sysDataSource = sysDataSourceService.getById(id);
+		sysDataSource.setId(IdUtil.simpleUUID());
+		sysDataSource.setName(name);
+		sysDataSourceService.save(sysDataSource);
+		return Result.ok("复制成功！");
+	}
 
     /**
      * 编辑

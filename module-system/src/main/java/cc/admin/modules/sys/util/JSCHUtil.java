@@ -1,58 +1,44 @@
 package cc.admin.modules.sys.util;
 
-import cc.admin.modules.mnt.entity.MntServer;
-import cn.hutool.core.io.IoUtil;
-import com.google.common.collect.ImmutableList;
-import com.jcraft.jsch.ChannelShell;
+import cn.hutool.core.util.StrUtil;
+import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
-import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.util.List;
+import java.io.InputStream;
 import java.util.Properties;
 /**
  * @author: ZhangHouYing
- * @date: 2021-02-08 22:33
+ * @date: 2021-01-15 17:06
  */
-@Slf4j
 public class JSCHUtil {
 
-	private String ip = "";
-	private int port = 22;
-	private String username = "root";
-	/**
-	 * keyFile   password
-	 */
-	private String loginType = "password";
-	private String password;
-	private String authenticateFile = "";
-	private String uploadPath;
-	private Session session;
+	private static JSCHUtil instance;
 
-	public JSCHUtil(MntServer mntServer, String uploadPath) throws Exception {
-		this.ip = mntServer.getIp();
-		this.username = mntServer.getUserName();
-		this.password = mntServer.getPassword();
-		this.port = mntServer.getPort();
-		this.authenticateFile = mntServer.getKeyFile();
-		this.loginType = mntServer.getLoginType();
-		this.uploadPath = uploadPath;
-		session = getSession();
+	private JSCHUtil() {
 	}
 
-	public Session getSession() throws Exception {
+	public static JSCHUtil getInstance() {
+		if (instance == null) {
+			instance = new JSCHUtil();
+		}
+		return instance;
+	}
+
+	private Session getSession(String host, int port, String ueseName, String authenticateFile)
+			throws Exception {
 		JSch jsch = new JSch();
-		if ("keyFile".equals(loginType)) {
-			jsch.addIdentity(uploadPath + File.separator + authenticateFile, "");
+		if (StrUtil.isNotEmpty(authenticateFile)) {
+			jsch.addIdentity(authenticateFile, "");
 		}
-		Session session = jsch.getSession(username, ip, port);
-		if ("password".equals(loginType)) {
-			session.setPassword(password);
-		}
+		Session session = jsch.getSession(ueseName, host, port);
+		return session;
+	}
+
+	public Session connect(String host, int port, String ueseName,
+						   String password, String authenticateFile) throws Exception {
+		Session session = getSession(host, port, ueseName, authenticateFile);
+		session.setPassword(password);
 		Properties config = new Properties();
 		config.setProperty("StrictHostKeyChecking", "no");
 		session.setConfig(config);
@@ -60,48 +46,28 @@ public class JSCHUtil {
 		return session;
 	}
 
-	public String execCmd(String command) throws Exception {
-		return execCmdList(ImmutableList.of(command));
-	}
-
-	public String execCmdList(List<String> commands) throws Exception {
-		ChannelShell channel = null;
-		PrintWriter printWriter = null;
-		BufferedReader input = null;
-		StringBuilder sb = new StringBuilder();
-		try {
-			channel = (ChannelShell) session.openChannel("shell");
-			channel.connect();
-			input = new BufferedReader(new InputStreamReader(channel.getInputStream()));
-			printWriter = new PrintWriter(channel.getOutputStream());
-			for (String command : commands) {
-				printWriter.println(command);
-				log.info("The command is: {}",command);
-			}
-			printWriter.println("exit");
-			printWriter.flush();
-			String line;
-			while ((line = input.readLine()) != null) {
-				sb.append(line);
-			}
-		} catch (Exception e) {
-			log.error(e.getMessage(),e);
-		}finally {
-			IoUtil.close(printWriter);
-			IoUtil.close(input);
-			if (channel != null) {
-				channel.disconnect();
-			}
+	public String execCmd(Session session, String command)
+			throws Exception {
+		if (session == null) {
+			throw new RuntimeException("Session is null!");
 		}
-		log.info("Result: {}",sb.toString());
-		return sb.toString();
+		ChannelExec exec = (ChannelExec) session.openChannel("exec");
+		InputStream in = exec.getInputStream();
+		byte[] b = new byte[1024];
+		exec.setCommand(command);
+		exec.connect();
+		StringBuffer buffer = new StringBuffer();
+		while (in.read(b) > 0) {
+			buffer.append(new String(b));
+		}
+		exec.disconnect();
+		return buffer.toString();
 	}
 
-	public void clear() {
+	public void clear(Session session) {
 		if ((session != null) && session.isConnected()) {
 			session.disconnect();
 			session = null;
 		}
 	}
-
 }

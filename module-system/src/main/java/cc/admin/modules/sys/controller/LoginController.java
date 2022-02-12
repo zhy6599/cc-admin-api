@@ -8,6 +8,8 @@ import cc.admin.common.sys.util.JwtUtil;
 import cc.admin.common.sys.vo.LoginUser;
 import cc.admin.common.util.*;
 import cc.admin.common.util.encryption.EncryptedString;
+import cc.admin.modules.cas.constant.Constant;
+import cc.admin.modules.cas.service.WxMiniApi;
 import cc.admin.modules.shiro.vo.DefContants;
 import cc.admin.modules.sys.entity.SysDepart;
 import cc.admin.modules.sys.entity.SysOnlineUser;
@@ -15,6 +17,7 @@ import cc.admin.modules.sys.entity.SysUser;
 import cc.admin.modules.sys.model.SysLoginModel;
 import cc.admin.modules.sys.service.*;
 import cc.admin.modules.sys.util.RandImageUtil;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.exceptions.ClientException;
@@ -23,6 +26,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,7 +57,18 @@ public class LoginController {
 	@Autowired
 	private ISysOnlineUserService sysOnlineUserService;
 
+	@Autowired
+	private ISysPermissionService sysPermissionService;
+
+	@Autowired
+	private WxMiniApi wxMiniApi;
+
 	private static final String BASE_CHECK_CODES = "qwertyuiplkjhgfdsazxcvbnmQWERTYUPLKJHGFDSAZXCVBNM1234567890";
+
+	@Value(value = "${cc.admin.wxMini.appId}")
+	private String appId;
+	@Value(value = "${cc.admin.wxMini.secret}")
+	private String secret;
 
 	@ApiOperation("登录接口")
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -216,6 +231,7 @@ public class LoginController {
 	 * @return
 	 */
 	@PostMapping(value = "/sms")
+	@ApiOperation("手机获取验证码")
 	public Result<String> sms(@RequestBody JSONObject jsonObject) {
 		Result<String> result = new Result<String>();
 		String mobile = jsonObject.get("mobile").toString();
@@ -346,6 +362,9 @@ public class LoginController {
 		}
 		obj.put("token", token);
 		obj.put("userInfo", sysUser);
+		//还需要把用户菜单信息也添加进来
+		JSONObject json = sysPermissionService.getUserPermissionByUserName(username);
+		obj.put("permissionInfo", json);
 		result.setResult(obj);
 		result.success("登录成功");
 		return result;
@@ -479,6 +498,67 @@ public class LoginController {
 			return Result.error("验证码错误");
 		}
 		return Result.ok();
+	}
+
+	/**
+	 * 小程序登录接口
+	 *
+	 * @param jsonObject
+	 * @return
+	 */
+	@ApiOperation("小程序登录接口")
+	@PostMapping("/miniLogin")
+	public Result<JSONObject> miniLogin(@RequestBody JSONObject jsonObject) {
+		Result<JSONObject> result = new Result<JSONObject>();
+		String code = jsonObject.getString("code");
+		String encryptedData = jsonObject.getString("encryptedData");
+		String iv = jsonObject.getString("iv");
+		JSONObject resultObject = wxMiniApi.authCode2Session(appId, secret, code);
+		if (resultObject == null) {
+			throw new RuntimeException("调用微信端授权认证接口错误");
+		}
+		String openId = resultObject.getString(Constant.OPEN_ID);
+		String sessionKey = resultObject.getString(Constant.SESSION_KEY);
+		String unionId = resultObject.getString(Constant.UNION_ID);
+		JSONObject userInfoObject = wxMiniApi.getUserInfo(encryptedData, sessionKey, iv);
+		if (userInfoObject == null) {
+			throw new RuntimeException("解密用户信息错误");
+		}
+		String nickName = userInfoObject.getString("nickName");
+		String avatarUrl = userInfoObject.getString("avatarUrl");
+		//校验用户有效性
+		SysUser sysUser = sysUserService.getUserByThirdId(openId);
+		//没有就创建一个返回回去
+		if (sysUser == null) {
+			sysUser = new SysUser();
+			sysUser.setId(IdUtil.simpleUUID());
+			sysUser.setThirdId(openId);
+			sysUser.setThirdType("miniProgram");
+			sysUser.setCreateTime(new Date());
+			String salt = oConvertUtils.randomGen(8);
+			sysUser.setSalt(salt);
+			String userName = IdUtil.simpleUUID();
+			sysUser.setUsername(userName);
+			String passwordEncode = PasswordUtil.encrypt(userName, "123456", salt);
+			sysUser.setRealname(nickName);
+			sysUser.setAvatar(avatarUrl);
+			sysUser.setPassword(passwordEncode);
+			sysUser.setStatus(1);
+			sysUser.setDelFlag(CommonConstant.DEL_FLAG_0);
+			String selectedRoles = "2";
+			sysUserService.addUserWithRole(sysUser, selectedRoles);
+			sysUserService.save(sysUser);
+		} else {
+			result = sysUserService.checkUserIsEffective(sysUser);
+		}
+		if (!result.isSuccess()) {
+			return result;
+		}
+		//用户信息
+		userInfo(sysUser, result);
+		//添加日志
+		sysBaseAPI.addLog("用户名: " + sysUser.getUsername() + ",登录成功！", CommonConstant.LOG_TYPE_1, null);
+		return result;
 	}
 
 }

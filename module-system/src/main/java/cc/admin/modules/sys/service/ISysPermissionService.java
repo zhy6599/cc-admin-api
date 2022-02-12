@@ -1,10 +1,11 @@
 package cc.admin.modules.sys.service;
 
+import cc.admin.common.exception.CcAdminException;
 import cc.admin.modules.sys.entity.SysPermission;
 import cc.admin.modules.sys.model.SysPermissionTree;
 import cc.admin.modules.sys.model.TreeModel;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.IService;
-import cc.admin.common.exception.CcAdminException;
 
 import java.util.List;
 
@@ -40,7 +41,7 @@ public interface ISysPermissionService extends IService<SysPermission> {
 	public void deletePermRuleByPermId(String id);
 
 	/**
-	  * 查询出带有特殊符号的菜单地址的集合
+	 * 查询出带有特殊符号的菜单地址的集合
 	 * @return
 	 */
 	public List<String> queryPermissionUrlWithStar();
@@ -67,4 +68,12 @@ public interface ISysPermissionService extends IService<SysPermission> {
 	 * @return
 	 */
 	public List<SysPermissionTree> getSystemSubmenu(String parentId);
+
+	/**
+	 * 根据用户名获取用户权限信息
+	 *
+	 * @param username
+	 * @return
+	 */
+	JSONObject getUserPermissionByUserName(String username);
 }

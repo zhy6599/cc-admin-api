@@ -71,6 +71,7 @@ public class SysPermissionController {
 			}
 			query.eq(SysPermission::getDelFlag, CommonConstant.DEL_FLAG_0);
 			query.orderByAsc(SysPermission::getSortNo);
+			query.orderByAsc(SysPermission::getCreateTime);
 			List<SysPermission> list = sysPermissionService.list(query);
 			List<SysPermissionTree> treeList = new ArrayList<>();
 			getTreeList(treeList, list, null);

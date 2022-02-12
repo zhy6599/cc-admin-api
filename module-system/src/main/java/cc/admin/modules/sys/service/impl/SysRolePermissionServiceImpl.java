@@ -1,21 +1,18 @@
 package cc.admin.modules.sys.service.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import cc.admin.common.util.oConvertUtils;
+import cc.admin.modules.shiro.authc.ShiroRealm;
 import cc.admin.modules.sys.entity.SysRolePermission;
 import cc.admin.modules.sys.mapper.SysRolePermissionMapper;
 import cc.admin.modules.sys.service.ISysRolePermissionService;
-import cc.admin.common.util.oConvertUtils;
-
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 /**
  * <getPageFilterFields>
@@ -33,7 +30,7 @@ public class SysRolePermissionServiceImpl extends ServiceImpl<SysRolePermissionM
 		LambdaQueryWrapper<SysRolePermission> query = new QueryWrapper<SysRolePermission>().lambda().eq(SysRolePermission::getRoleId, roleId);
 		this.remove(query);
 		List<SysRolePermission> list = new ArrayList<SysRolePermission>();
-        String[] arr = permissionIds.split(",");
+		String[] arr = permissionIds.split(",");
 		for (String p : arr) {
 			if(oConvertUtils.isNotEmpty(p)) {
 				SysRolePermission rolepms = new SysRolePermission(roleId, p);
@@ -45,6 +42,11 @@ public class SysRolePermissionServiceImpl extends ServiceImpl<SysRolePermissionM
 
 	@Override
 	public void saveRolePermission(String roleId, String permissionIds, String lastPermissionIds) {
+		//添加成功之后 清除缓存
+		DefaultWebSecurityManager securityManager = (DefaultWebSecurityManager) SecurityUtils.getSecurityManager();
+		ShiroRealm shiroRealm = (ShiroRealm) securityManager.getRealms().iterator().next();
+		//清除权限 相关的缓存
+		shiroRealm.clearAllCache();
 		List<String> add = getDiff(lastPermissionIds,permissionIds);
 		if(add!=null && add.size()>0) {
 			List<SysRolePermission> list = new ArrayList<SysRolePermission>();

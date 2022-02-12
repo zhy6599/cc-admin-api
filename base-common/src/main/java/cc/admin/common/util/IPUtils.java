@@ -174,7 +174,7 @@ public class IPUtils {
 			}
 			return address.equals(REGION) ? "内网IP" : address;
 		} catch (Exception e) {
-			log.error(e.getMessage(), e);
+			log.error(e.getMessage());
 		}
 		return "";
 	}

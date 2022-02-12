@@ -4,11 +4,11 @@ import cc.admin.modules.sys.entity.SysUser;
 import cc.admin.modules.sys.model.SysUserSysDepartModel;
 import cc.admin.modules.sys.vo.SysUserDepVo;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import java.util.List;
 
@@ -62,7 +62,6 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 	/**
 	 * 根据用户名设置部门ID
 	 * @param username
-	 * @param departId
 	 */
 	void updateUserDepart(@Param("username") String username,@Param("orgCode") String orgCode);
 
@@ -139,4 +138,6 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 	 * @return
 	 */
 	List<SysUser> queryByDepIds(@Param("departIds")List<String> departIds,@Param("username") String username);
+
+	SysUser getUserByThirdId(@Param("thirdId") String thirdId);
 }

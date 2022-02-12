@@ -19,7 +19,7 @@
 
 	<!--通过查询指定table的 text code 获取字典-->
 	<select id="queryTableDictItemsByCode" parameterType="String"  resultType="cc.admin.common.sys.vo.DictModel">
-		   select ${text} as "text",${code} as "value" from ${table}
+		   select distinct ${text} as "text",${code} as "value" from ${table}
 	</select>
 
 	<!--通过查询指定table的 text code 获取字典（指定查询条件）-->

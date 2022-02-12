@@ -161,4 +161,9 @@
 			and username != #{username}
 		</if>
 	</select>
+
+	<!-- 根据第三方ID查询 -->
+	<select id="getUserByThirdId" resultType="cc.admin.modules.sys.entity.SysUser">
+		select * from  t_sbsy_user  where third_id = #{thirdId} and del_flag = 0
+	</select>
 </mapper>

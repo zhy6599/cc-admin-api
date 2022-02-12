@@ -15,20 +15,20 @@
  */
 package cc.admin.modules.sys.util;
 
-import cc.admin.modules.mnt.entity.MntServer;
 import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.SCPClient;
-import lombok.extern.slf4j.Slf4j;
+import cn.hutool.core.util.StrUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * 远程执行linux命令
  * @author: ZhangHouYing
- * @date: 2021-02-08 22:33
+ * @date: 2019-08-10 10:06
  */
-@Slf4j
 public class ScpClientUtil {
 
 	private String ip;
@@ -36,18 +36,17 @@ public class ScpClientUtil {
 	private String username;
 	private String password;
 	private String authenticateFile;
-	/**
-	 * keyFile   password
-	 */
-	private String loginType = "password";
 
-	public ScpClientUtil(MntServer mntServer) {
-		this.ip = mntServer.getIp();
-		this.username = mntServer.getUserName();
-		this.password = mntServer.getPassword();
-		this.port = mntServer.getPort();
-		this.authenticateFile = mntServer.getKeyFile();
-		this.loginType = mntServer.getLoginType();
+	static synchronized public ScpClientUtil getInstance(String ip, int port, String username, String password, String authenticateFile) {
+		return new ScpClientUtil(ip, port, username, password, authenticateFile);
+	}
+
+	public ScpClientUtil(String ip, int port, String username, String password, String authenticateFile) {
+		this.ip = ip;
+		this.port = port;
+		this.username = username;
+		this.password = password;
+		this.authenticateFile = authenticateFile;
 	}
 
 	public void getFile(String remoteFile, String localTargetDirectory) {
@@ -58,7 +57,7 @@ public class ScpClientUtil {
 			SCPClient client = new SCPClient(conn);
 			client.get(remoteFile, localTargetDirectory);
 		} catch (IOException ex) {
-			log.error("获取文件失败",ex);
+			Logger.getLogger(SCPClient.class.getName()).log(Level.SEVERE, null, ex);
 		}finally{
 			conn.close();
 		}
@@ -87,24 +86,22 @@ public class ScpClientUtil {
 				client.put(localFile, remoteFileName, remoteTargetDirectory, mode);
 			}
 		} catch (IOException ex) {
-			log.error("上传文件失败",ex);
+			Logger.getLogger(ScpClientUtil.class.getName()).log(Level.SEVERE, null, ex);
 		}finally{
 			conn.close();
 		}
 	}
 
 	private void author(Connection conn) throws IOException {
-		if ("password".equals(loginType)) {
+		if (StrUtil.isNotEmpty(password)) {
 			boolean isAuthenticated = conn.authenticateWithPassword(username, password);
 			if (!isAuthenticated) {
-				log.error("authentication failed");
+				System.err.println("authentication failed");
 			}
-		}
-
-		if ("keyFile".equals(loginType)) {
+		} else {
 			boolean isAuthenticated = conn.authenticateWithPublicKey(username, new File(authenticateFile),"");
 			if (!isAuthenticated) {
-				log.error("authentication failed");
+				System.err.println("authentication failed");
 			}
 		}
 	}

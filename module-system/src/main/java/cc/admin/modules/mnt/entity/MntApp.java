@@ -56,6 +56,12 @@ public class MntApp {
 	@Excel(name = "启动脚本", width = 15)
     @ApiModelProperty(value = "启动脚本")
 	private String startScript;
+	/**
+	 * 停止脚本
+	 */
+	@Excel(name = "停止脚本", width = 15)
+	@ApiModelProperty(value = "停止脚本")
+	private String stopScript;
 	/**部署脚本*/
 	@Excel(name = "部署脚本", width = 15)
     @ApiModelProperty(value = "部署脚本")

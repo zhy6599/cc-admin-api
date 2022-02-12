@@ -232,4 +232,11 @@ public interface ISysUserService extends IService<SysUser> {
 	 */
 	List<SysUser> queryByDepIds(List<String> departIds, String username);
 
+	/**
+	 * 根据第三方ID获取用户名和密码
+	 *
+	 * @param thirdId
+	 * @return
+	 */
+	public SysUser getUserByThirdId(String thirdId);
 }

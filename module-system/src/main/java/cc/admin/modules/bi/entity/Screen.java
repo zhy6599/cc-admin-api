@@ -65,6 +65,12 @@ public class Screen implements Serializable {
 	@Excel(name = "配置信息", width = 15)
     @ApiModelProperty(value = "配置信息")
     private String config;
+	/**
+	 * 封面图片
+	 */
+	@Excel(name = "封面图片", width = 15)
+	@ApiModelProperty(value = "封面图片")
+	private String imageUrl;
 	/**目录编号*/
 	@Excel(name = "目录编号", width = 15)
 	@Dict(dicCode = "id",dicText = "name",dictTable = "sys_catalog")

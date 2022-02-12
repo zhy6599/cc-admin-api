@@ -186,7 +186,6 @@ public interface ISysBaseAPI {
 	 * @param keyArray
 	 * @return
 	 */
-	@Deprecated
 	public List<String> queryTableDictByKeys(String table, String text, String code, String[] keyArray);
 
 	/**

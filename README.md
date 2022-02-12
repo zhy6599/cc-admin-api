@@ -9,11 +9,10 @@
 </div>
 
 #### 项目简介
-一个基于 Spring Boot 2.1.3 、 Spring Boot Mybatis plus、 JWT、Spring Security、Redis、Vue quasar的前后端分离的后台管理系统(quasar 是重点！)
+一个基于 Spring Boot 2.1.3 、 Mybatis plus、 JWT、Shiro、Redis、Vue quasar的前后端分离的后台管理系统,带有非常炫酷的BI！
 
-本项目以后的发展方向打算向数据分析和BI方向靠拢！（不排除会变）
 
-**体验地址：**  [http://8.131.83.13:10000/](http://8.131.83.13:10000/)
+**体验地址：**  [http://www.cc-admin.top/](http://http://www.cc-admin.top/)
 
 **账号密码：** `admin / 123456`
 

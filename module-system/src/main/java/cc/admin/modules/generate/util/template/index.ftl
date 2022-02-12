@@ -41,6 +41,16 @@
                     <q-td :props="props" :auto-width="true">
                         <q-btn flat round dense color="primary" icon="edit"
                                @click="edit(props.row)"> <q-tooltip>编辑</q-tooltip></q-btn>
+                        <q-btn
+                                flat
+                                round
+                                dense
+                                color="primary"
+                                icon="mdi-content-copy"
+                                @click="copy(props.row)"
+                        >
+                            <q-tooltip>复制</q-tooltip>
+                        </q-btn>
                         <btn-del label="${geForm.moduleName}" @confirm="del(props.row)"/>
                     </q-td>
                 </template>
@@ -112,6 +122,9 @@ export default {
             list: '/${requestMapping}/list',
                     add: '/${requestMapping}/add',
                     edit: '/${requestMapping}/edit',
+                    copy
+        :
+            '/${requestMapping}/copy',
                     delete: '/${requestMapping}/delete',
                     deleteBatch: '/${requestMapping}/deleteBatch',
                     exportXlsUrl: '/${requestMapping}/exportXls',

@@ -24,7 +24,11 @@ public interface NormalExcelConstants extends BasePOIConstants {
 	/**
 	 * 单Sheet导出
 	 */
-	public final static String DSTC_ENTITY_EXCEL_VIEW = "ccEntityExcelView";
+	public final static String CC_ADMIN_ENTITY_EXCEL_VIEW = "ccEntityExcelView";
+	/**
+	 * 模型Sheet导出
+	 */
+	public final static String CC_ADMIN_DATA_MODEL_EXCEL_VIEW = "dataModelExcelView";
 	/**
 	 * 数据列表
 	 */
@@ -39,5 +43,9 @@ public interface NormalExcelConstants extends BasePOIConstants {
 	 * 导出字段自定义
 	 */
 	public final static String EXPORT_FIELDS = "exportFields";
+	/**
+	 * EXPORT_WORKBOOK
+	 */
+	public final static String EXPORT_WORKBOOK = "exportWorkbook";
 
 }

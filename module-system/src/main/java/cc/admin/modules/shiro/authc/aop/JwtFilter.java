@@ -1,17 +1,17 @@
 package cc.admin.modules.shiro.authc.aop;
 
+import cc.admin.modules.shiro.authc.JwtToken;
+import cc.admin.modules.shiro.vo.DefContants;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
+import org.apache.shiro.web.util.WebUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.RequestMethod;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import cc.admin.modules.shiro.authc.JwtToken;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
-import cc.admin.modules.shiro.vo.DefContants;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.RequestMethod;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @Description: 鉴权登录拦截器
@@ -35,8 +35,9 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
 			executeLogin(request, response);
 			return true;
 		} catch (Exception e) {
-			throw new AuthenticationException("Token失效，请重新登录", e);
+			log.error(e.getMessage());
 		}
+		return false;
 	}
 
 	/**
@@ -70,5 +71,18 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
 			return false;
 		}
 		return super.preHandle(request, response);
+	}
+
+	@Override
+	protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
+		this.sendNeedLogin(request, response);
+		return false;
+	}
+
+	protected boolean sendNeedLogin(ServletRequest request, ServletResponse response) {
+		log.debug("Authentication required: sending 401 Authentication challenge response.");
+		HttpServletResponse httpResponse = WebUtils.toHttp(response);
+		httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		return false;
 	}
 }

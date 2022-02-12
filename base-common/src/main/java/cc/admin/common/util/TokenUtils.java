@@ -1,12 +1,13 @@
 package cc.admin.common.util;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.apache.shiro.authc.AuthenticationException;
 import cc.admin.common.constant.CommonConstant;
 import cc.admin.common.sys.api.ISysBaseAPI;
 import cc.admin.common.sys.util.JwtUtil;
 import cc.admin.common.sys.vo.LoginUser;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.ExpiredCredentialsException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -60,7 +61,7 @@ public class TokenUtils {
         }
         // 校验token是否超时失效 & 或者账号密码是否错误
         if (!jwtTokenRefresh(token, username, user.getPassword(), redisUtil)) {
-            throw new AuthenticationException("Token失效，请重新登录!");
+			throw new ExpiredCredentialsException("Token失效，请重新登录!");
         }
         return true;
     }

@@ -11,6 +11,7 @@ import javax.swing.filechooser.FileSystemView;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -188,7 +189,7 @@ public class MockController {
 			//json = FileUtils.re.readFileToString(jsonFile);
 			//换个写法，解决springboot读取jar包中文件的问题
 			InputStream stream = getClass().getClassLoader().getResourceAsStream(jsonSrc.replace("classpath:", ""));
-			json = IOUtils.toString(stream);
+			json = IOUtils.toString(stream, Charset.defaultCharset());
 		} catch (IOException e) {
 			log.error(e.getMessage(),e);
 		}

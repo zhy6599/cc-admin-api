@@ -4,8 +4,8 @@ import cc.admin.common.api.vo.Result;
 import cc.admin.common.aspect.annotation.AutoLog;
 import cc.admin.common.sys.base.controller.BaseController;
 import cc.admin.common.sys.query.QueryGenerator;
-import cc.admin.modules.demo.entity.DemoTest;
-import cc.admin.modules.demo.service.IDemoTestService;
+import ${bussiPackage}.${entityPackage}.entity.${entityName};
+import ${bussiPackage}.${entityPackage}.service.I${entityName}Service;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -58,7 +58,7 @@ public class ${entityName}Controller extends BaseController<${entityName}, I${en
 <#if generate.isSimpleQuery == "1">
 								   @RequestParam(name="key",required = false) String key,
 <#else>
-								   ${entityName} ${entityName?uncap_first},
+    ${entityName} ${entityName?uncap_first},
 </#if>
 <#if generate.tableType == "catalog">
 								   @RequestParam(name = "catalog",required = false) String catalog,
@@ -73,7 +73,7 @@ public class ${entityName}Controller extends BaseController<${entityName}, I${en
 </#if>
 <#if generate.isSimpleQuery == "1">
 		if (StrUtil.isNotEmpty(key)) {
-			${simpleQueryContent}
+    ${simpleQueryContent}
 		}
 </#if>
 <#if generate.tableType == "catalog">
@@ -113,6 +113,24 @@ ${entityName?uncap_first}Service.save(${entityName?uncap_first});
 	public Result<?> edit(@RequestBody ${entityName} ${entityName?uncap_first}) {
 ${entityName?uncap_first}Service.updateById(${entityName?uncap_first});
 		return Result.ok("编辑成功!");
+	}
+
+
+	/**
+	 *   复制
+	 * @param id
+	 * @param name
+	 * @return
+	 */
+	@AutoLog(value = "${geForm.moduleName}-复制")
+	@ApiOperation(value="${geForm.moduleName}-复制", notes="${geForm.moduleName}-复制")
+	@PostMapping(value = "/copy")
+	public Result<?> copy(@RequestParam(name="id",required=true) String id,@RequestParam(name="name",required=true) String name) {
+${entityName} ${entityName?uncap_first} = ${entityName?uncap_first}Service.getById(id);
+${entityName?uncap_first}.setId(IdUtil.fastUUID());
+${entityName?uncap_first}.setName(name);
+${entityName?uncap_first}Service.save(${entityName?uncap_first});
+		return Result.ok("复制成功！");
 	}
 
 	/**

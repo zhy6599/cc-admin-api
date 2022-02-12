@@ -52,6 +52,7 @@ spring:
             isClustered: true
             misfireThreshold: 60000
             clusterCheckinInterval: 10000
+            selectWithLockSQL: SELECT* FROM {0}LOCKS UPDLOCK WHERE LOCK_NAME = ?
           threadPool:
             class: org.quartz.simpl.SimpleThreadPool
             threadCount: 10
@@ -127,16 +128,16 @@ spring:
         connectionProperties: druid.stat.mergeSql\=true;druid.stat.slowSqlMillis\=5000
       datasource:
         master:
-          url: jdbc:mysql://localhost:3306/cc-admin?characterEncoding=UTF-8&useUnicode=true&useSSL=false
+          url: jdbc:mysql://localhost:3306/cc-admin-gitee?characterEncoding=UTF-8&useUnicode=true&useSSL=false
           username: root
           password: root
           driver-class-name: com.mysql.jdbc.Driver
           # 多数据源配置
-          #multi-datasource1:
-          #getUrl: jdbc:mysql://localhost:3306/cc-admin2?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true
-          #username: root
-          #password: root
-          #driver-class-name: com.mysql.jdbc.Driver
+        hds:
+          url: jdbc:mysql://localhost:3306/cc-admin-gitee?characterEncoding=UTF-8&useUnicode=true&useSSL=false
+          username: root
+          password: root
+          driver-class-name: com.mysql.jdbc.Driver
   #redis 配置
   redis:
     database: 0
@@ -169,6 +170,9 @@ mybatis-plus:
 #cc专用配置
 cc:
   admin:
+    wxMini:
+      appId: xxxxxxxxx
+      secret: ffffffffffffffffff
     # 本地：local\Minio：minio\阿里云：alioss
     uploadType: local
     path :

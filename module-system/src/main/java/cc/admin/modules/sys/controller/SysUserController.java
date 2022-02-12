@@ -11,6 +11,7 @@ import cc.admin.common.util.PasswordUtil;
 import cc.admin.common.util.PmsUtil;
 import cc.admin.common.util.RedisUtil;
 import cc.admin.common.util.oConvertUtils;
+import cc.admin.modules.shiro.authc.ShiroRealm;
 import cc.admin.modules.sys.entity.*;
 import cc.admin.modules.sys.model.DepartIdModel;
 import cc.admin.modules.sys.model.SysUserSysDepartModel;
@@ -32,11 +33,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -169,6 +172,11 @@ public class SysUserController {
 	@RequiresPermissions("user:roles")
 	public Result<?> setUserRoles(@RequestParam(name="userId", required = true) String userId,
 								  @RequestParam(name="selectedRoles", required = true) String selectedRoles) {
+		//添加成功之后 清除缓存
+		DefaultWebSecurityManager securityManager = (DefaultWebSecurityManager) SecurityUtils.getSecurityManager();
+		ShiroRealm shiroRealm = (ShiroRealm) securityManager.getRealms().iterator().next();
+		//清除权限 相关的缓存
+		shiroRealm.clearAllCache();
 		SysUser sysUser = sysUserService.getById(userId);
 		if(sysUser==null) {
 			return Result.error("未找到对应实体");
@@ -1222,5 +1230,37 @@ public class SysUserController {
         }
         return result;
     }
+
+	/**
+	 * 小程序修改用户信息
+	 *
+	 * @param jsonObject
+	 * @return
+	 */
+	@ApiOperation("小程序编辑用户")
+	@RequestMapping(value = "/miniEdit", method = RequestMethod.PUT)
+	public Result<SysUser> miniEdit(@RequestBody JSONObject jsonObject) {
+		Result<SysUser> result = new Result<SysUser>();
+		try {
+			LoginUser loginUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+			SysUser sysUser = sysUserService.getById(loginUser.getId());
+			sysBaseAPI.addLog("小程序编辑用户，id： " + jsonObject.getString("id"), CommonConstant.LOG_TYPE_2, 2);
+			if (sysUser == null) {
+				result.error500("未找到对应用户!");
+			} else {
+				String phone = jsonObject.getString("phone");
+				String avatarUrl = jsonObject.getString("avatarUrl");
+				String nickName = jsonObject.getString("nickName");
+				sysUser.setAvatar(avatarUrl);
+				sysUser.setPhone(phone);
+				sysUser.setRealname(nickName);
+				sysUserService.updateById(sysUser);
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			result.error500("操作失败!");
+		}
+		return result;
+	}
 
 }

@@ -38,14 +38,14 @@ public class ShiroConfig {
 	@Value("${cc.admin.shiro.excludeUrls}")
 	private String excludeUrls;
 
-    @Value("${spring.redis.port}")
-    private String port;
+	@Value("${spring.redis.port}")
+	private String port;
 
-    @Value("${spring.redis.host}")
-    private String host;
+	@Value("${spring.redis.host}")
+	private String host;
 
-    @Value("${spring.redis.password}")
-    private String redisPassword;
+	@Value("${spring.redis.password}")
+	private String redisPassword;
 
 	@Value("${spring.redis.database}")
 	private int database;
@@ -69,7 +69,8 @@ public class ShiroConfig {
 				filterChainDefinitionMap.put(url,"anon");
 			}
 		}
-
+		//放开报表设计器
+		filterChainDefinitionMap.put("/ureport/**", "anon");
 		//cas验证登录   author  role user 记住我 perms  anon
 		filterChainDefinitionMap.put("/cas/client/validateLogin", "anon");
 		// 配置不会被拦截的链接 顺序判断
@@ -77,6 +78,7 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/sys/checkCaptcha", "anon"); //登录验证码接口排除
 		filterChainDefinitionMap.put("/sys/login", "anon"); //登录接口排除
 		filterChainDefinitionMap.put("/sys/mLogin", "anon"); //登录接口排除
+		filterChainDefinitionMap.put("/sys/miniLogin", "anon"); //登录接口排除
 		filterChainDefinitionMap.put("/sys/logout", "anon"); //登出接口排除
 		filterChainDefinitionMap.put("/thirdLogin/**", "anon"); //第三方登录
 		filterChainDefinitionMap.put("/sys/getEncryptedString", "anon"); //获取加密串
@@ -118,9 +120,9 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/actuator/metrics/**", "anon");
 		filterChainDefinitionMap.put("/actuator/httptrace/**", "anon");
 		filterChainDefinitionMap.put("/actuator/redis/**", "anon");
-
-        //大屏设计器排除
+		//大屏设计器排除
 		filterChainDefinitionMap.put("/big/screen/**", "anon");
+		filterChainDefinitionMap.put("/call/queue/queue", "anon");
 
 		//测试示例
 		filterChainDefinitionMap.put("/test/ccDemo/html", "anon"); //模板页面
@@ -157,8 +159,8 @@ public class ShiroConfig {
 		defaultSessionStorageEvaluator.setSessionStorageEnabled(false);
 		subjectDAO.setSessionStorageEvaluator(defaultSessionStorageEvaluator);
 		securityManager.setSubjectDAO(subjectDAO);
-        //自定义缓存实现,使用redis
-        securityManager.setCacheManager(redisCacheManager());
+		//自定义缓存实现,使用redis
+		securityManager.setCacheManager(redisCacheManager());
 		return securityManager;
 	}
 
@@ -172,9 +174,9 @@ public class ShiroConfig {
 		DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
 		defaultAdvisorAutoProxyCreator.setProxyTargetClass(true);
 		/**
-		* 解决重复代理问题 github#994
-		* 添加前缀判断 不匹配 任何Advisor
-		*/
+		 * 解决重复代理问题 github#994
+		 * 添加前缀判断 不匹配 任何Advisor
+		 */
 		defaultAdvisorAutoProxyCreator.setUsePrefix(true);
 		defaultAdvisorAutoProxyCreator.setAdvisorBeanNamePrefix("_no_advisor");
 		return defaultAdvisorAutoProxyCreator;
@@ -192,41 +194,41 @@ public class ShiroConfig {
 		return advisor;
 	}
 
-    /**
-     * cacheManager 缓存 redis实现
-     * 使用的是shiro-redis开源插件
-     *
-     * @return
-     */
-    public RedisCacheManager redisCacheManager() {
-        log.info("===============(1)创建缓存管理器RedisCacheManager");
-        RedisCacheManager redisCacheManager = new RedisCacheManager();
-        redisCacheManager.setRedisManager(redisManager());
-        //redis中针对不同用户缓存(此处的id需要对应user实体中的id字段,用于唯一标识)
-        redisCacheManager.setPrincipalIdFieldName("id");
-        //用户权限信息缓存时间
-        redisCacheManager.setExpire(200000);
-        return redisCacheManager;
-    }
+	/**
+	 * cacheManager 缓存 redis实现
+	 * 使用的是shiro-redis开源插件
+	 *
+	 * @return
+	 */
+	public RedisCacheManager redisCacheManager() {
+		log.info("===============(1)创建缓存管理器RedisCacheManager");
+		RedisCacheManager redisCacheManager = new RedisCacheManager();
+		redisCacheManager.setRedisManager(redisManager());
+		//redis中针对不同用户缓存(此处的id需要对应user实体中的id字段,用于唯一标识)
+		redisCacheManager.setPrincipalIdFieldName("id");
+		//用户权限信息缓存时间
+		redisCacheManager.setExpire(200000);
+		return redisCacheManager;
+	}
 
-    /**
-     * 配置shiro redisManager
-     * 使用的是shiro-redis开源插件
-     *
-     * @return
-     */
-    @Bean
-    public RedisManager redisManager() {
-        log.info("===============(2)创建RedisManager,连接Redis..URL= " + host + ":" + port);
-        RedisManager redisManager = new RedisManager();
+	/**
+	 * 配置shiro redisManager
+	 * 使用的是shiro-redis开源插件
+	 *
+	 * @return
+	 */
+	@Bean
+	public RedisManager redisManager() {
+		log.info("===============(2)创建RedisManager,连接Redis..URL= " + host + ":" + port);
+		RedisManager redisManager = new RedisManager();
 		redisManager.setHost(host);
 		redisManager.setPort(oConvertUtils.getInt(port));
 		redisManager.setDatabase(database);
 		redisManager.setTimeout(0);
-        if (!StringUtils.isEmpty(redisPassword)) {
-            redisManager.setPassword(redisPassword);
-        }
-        return redisManager;
-    }
+		if (!StringUtils.isEmpty(redisPassword)) {
+			redisManager.setPassword(redisPassword);
+		}
+		return redisManager;
+	}
 
 }

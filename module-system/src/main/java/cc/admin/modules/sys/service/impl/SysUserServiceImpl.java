@@ -1,5 +1,14 @@
 package cc.admin.modules.sys.service.impl;
 
+import cc.admin.common.api.vo.Result;
+import cc.admin.common.constant.CacheConstant;
+import cc.admin.common.constant.CommonConstant;
+import cc.admin.common.sys.api.ISysBaseAPI;
+import cc.admin.common.sys.vo.LoginUser;
+import cc.admin.common.sys.vo.SysUserCacheInfo;
+import cc.admin.common.util.PasswordUtil;
+import cc.admin.common.util.UUIDGenerator;
+import cc.admin.common.util.oConvertUtils;
 import cc.admin.modules.sys.entity.*;
 import cc.admin.modules.sys.mapper.*;
 import cc.admin.modules.sys.model.SysUserSysDepartModel;
@@ -11,15 +20,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import cc.admin.common.api.vo.Result;
-import cc.admin.common.constant.CacheConstant;
-import cc.admin.common.constant.CommonConstant;
-import cc.admin.common.sys.api.ISysBaseAPI;
-import cc.admin.common.sys.vo.LoginUser;
-import cc.admin.common.sys.vo.SysUserCacheInfo;
-import cc.admin.common.util.PasswordUtil;
-import cc.admin.common.util.UUIDGenerator;
-import cc.admin.common.util.oConvertUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
@@ -430,6 +430,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	@Override
 	public List<SysUser> queryByDepIds(List<String> departIds, String username) {
 		return userMapper.queryByDepIds(departIds,username);
+	}
+
+	@Override
+	public SysUser getUserByThirdId(String thirdId) {
+		return userMapper.getUserByThirdId(thirdId);
 	}
 
 }

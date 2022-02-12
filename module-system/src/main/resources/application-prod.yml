@@ -52,6 +52,7 @@ spring:
             isClustered: true
             misfireThreshold: 60000
             clusterCheckinInterval: 10000
+            selectWithLockSQL: SELECT* FROM {0}LOCKS UPDLOCK WHERE LOCK_NAME = ?
           threadPool:
             class: org.quartz.simpl.SimpleThreadPool
             threadCount: 10
@@ -148,7 +149,7 @@ spring:
         max-wait: -1ms  #最大建立连接等待时间。如果超过此时间将接到异常。设为-1表示无限制。
         min-idle: 0     #最小等待连接中的数量,设 0 为没有限制
       shutdown-timeout: 100ms
-    password: '3edcVFR$'
+    password: '123456'
     port: 6379
 #mybatis plus 设置
 mybatis-plus:
@@ -169,6 +170,9 @@ mybatis-plus:
 #cc专用配置
 cc:
   admin:
+    wxMini:
+      appId: xxxxxxxxx
+      secret: ffffffffffffffffff
     # 本地：local\Minio：minio\阿里云：alioss
     uploadType: local
     path :

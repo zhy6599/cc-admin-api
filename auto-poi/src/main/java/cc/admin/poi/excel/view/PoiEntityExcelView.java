@@ -36,7 +36,7 @@ import java.util.Map;
  *
  */
 @SuppressWarnings("unchecked")
-@Controller(NormalExcelConstants.DSTC_ENTITY_EXCEL_VIEW)
+@Controller(NormalExcelConstants.CC_ADMIN_ENTITY_EXCEL_VIEW)
 public class PoiEntityExcelView extends MiniAbstractExcelView {
 
 	public PoiEntityExcelView() {

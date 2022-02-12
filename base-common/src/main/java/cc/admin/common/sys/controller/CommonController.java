@@ -1,6 +1,8 @@
 package cc.admin.common.sys.controller;
 
 import cc.admin.common.api.vo.Result;
+import cc.admin.common.constant.CommonConstant;
+import cc.admin.common.sys.api.ISysBaseAPI;
 import cc.admin.common.util.CommonUtils;
 import cc.admin.common.util.RestUtil;
 import cc.admin.common.util.TokenUtils;
@@ -8,8 +10,6 @@ import cc.admin.common.util.oConvertUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
-import cc.admin.common.constant.CommonConstant;
-import cc.admin.common.sys.api.ISysBaseAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -49,7 +49,7 @@ public class CommonController {
 	private ISysBaseAPI sysBaseAPI;
 
 	@Value(value = "${cc.admin.path.upload}")
-	private String uploadpath;
+	private String uploadPath;
 
 	/**
 	 * 本地：local minio：minio 阿里：alioss
@@ -70,7 +70,7 @@ public class CommonController {
 	public Result<?> handleFileUpload(@RequestPart(value = "file") final MultipartFile multipartFile,HttpServletRequest request) throws IOException {
 		Result<?> result = new Result<>();
 		final byte[] bytes = multipartFile.getBytes();
-		String ctxPath = uploadpath;
+		String ctxPath = uploadPath;
 		String fileName = null;
 		File file = new File(ctxPath + File.separator + File.separator );
 		if (!file.exists()) {
@@ -151,7 +151,7 @@ public class CommonController {
 	 */
 	private String uploadLocal(MultipartFile mf,String bizPath){
 		try {
-			String ctxPath = uploadpath;
+			String ctxPath = uploadPath;
 			String fileName = null;
 			File file = new File(ctxPath + File.separator + bizPath + File.separator );
 			if (!file.exists()) {
@@ -188,7 +188,7 @@ public class CommonController {
 //	public Result<?> upload2(HttpServletRequest request, HttpServletResponse response) {
 //		Result<?> result = new Result<>();
 //		try {
-//			String ctxPath = uploadpath;
+//			String ctxPath = uploadPath;
 //			String fileName = null;
 //			String bizPath = "files";
 //			String tempBizPath = request.getParameter("biz");
@@ -243,7 +243,7 @@ public class CommonController {
 			if (imgPath.endsWith(",")) {
 				imgPath = imgPath.substring(0, imgPath.length() - 1);
 			}
-			String filePath = uploadpath + File.separator + imgPath;
+			String filePath = uploadPath + File.separator + imgPath;
 			File file = new File(filePath);
 			if(!file.exists()){
 				response.setStatus(404);
@@ -282,63 +282,63 @@ public class CommonController {
 
 	}
 
-//	/**
-//	 * 下载文件
-//	 * 请求地址：http://localhost:8080/common/download/{user/20190119/e1fe9925bc315c60addea1b98eb1cb1349547719_1547866868179.jpg}
-//	 *
-//	 * @param request
-//	 * @param response
-//	 * @throws Exception
-//	 */
-//	@GetMapping(value = "/download/**")
-//	public void download(HttpServletRequest request, HttpServletResponse response) throws Exception {
-//		// ISO-8859-1 ==> UTF-8 进行编码转换
-//		String filePath = extractPathFromPattern(request);
-//		// 其余处理略
-//		InputStream inputStream = null;
-//		OutputStream outputStream = null;
-//		try {
-//			filePath = filePath.replace("..", "");
-//			if (filePath.endsWith(",")) {
-//				filePath = filePath.substring(0, filePath.length() - 1);
-//			}
-//			String localPath = uploadpath;
-//			String downloadFilePath = localPath + File.separator + filePath;
-//			File file = new File(downloadFilePath);
-//	         if (file.exists()) {
-//	         	response.setContentType("application/force-download");// 设置强制下载不打开            
-//	 			response.addHeader("Content-Disposition", "attachment;fileName=" + new String(file.getName().getBytes("UTF-8"),"iso-8859-1"));
-//	 			inputStream = new BufferedInputStream(new FileInputStream(file));
-//	 			outputStream = response.getOutputStream();
-//	 			byte[] buf = new byte[1024];
-//	 			int len;
-//	 			while ((len = inputStream.read(buf)) > 0) {
-//	 				outputStream.write(buf, 0, len);
-//	 			}
-//	 			response.flushBuffer();
-//	         }
-//
-//		} catch (Exception getUuid) {
-//			log.info("文件下载失败" + getUuid.getMessage());
-//			// getUuid.printStackTrace();
-//		} finally {
-//			if (inputStream != null) {
-//				try {
-//					inputStream.close();
-//				} catch (IOException getUuid) {
-//					getUuid.printStackTrace();
-//				}
-//			}
-//			if (outputStream != null) {
-//				try {
-//					outputStream.close();
-//				} catch (IOException getUuid) {
-//					getUuid.printStackTrace();
-//				}
-//			}
-//		}
-//
-//	}
+	/**
+	 * 下载文件
+	 * 请求地址：http://localhost:8080/common/download/{user/20190119/e1fe9925bc315c60addea1b98eb1cb1349547719_1547866868179.jpg}
+	 *
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@GetMapping(value = "/download/**")
+	public void download(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// ISO-8859-1 ==> UTF-8 进行编码转换
+		String filePath = extractPathFromPattern(request);
+		// 其余处理略
+		InputStream inputStream = null;
+		OutputStream outputStream = null;
+		try {
+			filePath = filePath.replace("..", "");
+			if (filePath.endsWith(",")) {
+				filePath = filePath.substring(0, filePath.length() - 1);
+			}
+			String localPath = uploadPath;
+			String downloadFilePath = localPath + File.separator + filePath;
+			File file = new File(downloadFilePath);
+	         if (file.exists()) {
+	         	response.setContentType("application/force-download");// 设置强制下载不打开            
+	 			response.addHeader("Content-Disposition", "attachment;fileName=" + new String(file.getName().getBytes("UTF-8"),"iso-8859-1"));
+	 			inputStream = new BufferedInputStream(new FileInputStream(file));
+	 			outputStream = response.getOutputStream();
+	 			byte[] buf = new byte[1024];
+	 			int len;
+	 			while ((len = inputStream.read(buf)) > 0) {
+	 				outputStream.write(buf, 0, len);
+	 			}
+	 			response.flushBuffer();
+	         }
+
+		} catch (Exception getUuid) {
+			log.info("文件下载失败" + getUuid.getMessage());
+			// getUuid.printStackTrace();
+		} finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				} catch (IOException getUuid) {
+					getUuid.printStackTrace();
+				}
+			}
+			if (outputStream != null) {
+				try {
+					outputStream.close();
+				} catch (IOException getUuid) {
+					getUuid.printStackTrace();
+				}
+			}
+		}
+
+	}
 
 	/**
 	 * @功能：pdf预览Iframe

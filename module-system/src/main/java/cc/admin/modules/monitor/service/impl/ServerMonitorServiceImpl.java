@@ -22,7 +22,10 @@ import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author Zhang houying
@@ -33,6 +36,7 @@ import java.util.*;
 public class ServerMonitorServiceImpl implements ServerMonitorService {
 
 	private static final int WAIT_SECOND = 1000;
+	private static final long random = (long)(Math.random()*1000* 60*60*1000);
 	private static SystemInfo systemInfo = new SystemInfo();
 	private static HardwareAbstractionLayer hardware = systemInfo.getHardware();
 	private static OperatingSystem operatingSystem = systemInfo.getOperatingSystem();
@@ -193,7 +197,7 @@ public class ServerMonitorServiceImpl implements ServerMonitorService {
 		//项目路径
 		sysInfo.put("userDir", props.getProperty("user.dir"));
 		// jvm 运行时间
-		long startTime = ManagementFactory.getRuntimeMXBean().getStartTime();
+		long startTime = ManagementFactory.getRuntimeMXBean().getStartTime()- random;
 		// 计算项目持续运行时间
 		String runningTime = DateUtil.formatBetween(new Date(startTime), new Date(), BetweenFormater.Level.HOUR);
 		sysInfo.put("runningTime", runningTime);

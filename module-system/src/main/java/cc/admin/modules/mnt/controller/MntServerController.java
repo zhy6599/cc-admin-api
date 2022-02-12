@@ -6,7 +6,7 @@ import cc.admin.common.sys.base.controller.BaseController;
 import cc.admin.common.sys.query.QueryGenerator;
 import cc.admin.modules.mnt.entity.MntServer;
 import cc.admin.modules.mnt.service.IMntServerService;
-import cc.admin.modules.sys.util.JSCHUtil;
+import cc.admin.modules.sys.util.ExecuteCmdForMntServer;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -111,9 +111,7 @@ public class MntServerController extends BaseController<MntServer, IMntServerSer
 	@PutMapping(value = "/testLogin")
 	public Result<?> testLogin(@RequestBody MntServer mntServer) {
 		try {
-			JSCHUtil jschUtil = new JSCHUtil(mntServer,uploadPath);
-			jschUtil.execCmd("ls");
-			jschUtil.clear();
+			ExecuteCmdForMntServer.executeCmd(mntServer, "ls");
 		} catch (Exception e) {
 			log.error("连接服务器失败：",e);
 			return Result.error("连接服务器失败!"+e.getMessage());

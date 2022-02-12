@@ -481,8 +481,18 @@ public class GenerateServiceImpl extends ServiceImpl<GenerateMapper, Generate> i
 		if (value == null) {
 			return defaultValue;
 		} else {
-			return (String) value;
+			if (value instanceof byte[]) {
+				return new String((byte[])value);
+			}
+			return String.valueOf(value);
 		}
+	}
+
+	public static String getType(Object object){
+		String typeName=object.getClass().getName();
+		int length= typeName.lastIndexOf(".");
+		String type =typeName.substring(length+1);
+		return type;
 	}
 
 	private Integer getIntegerValue(Map<String, Object> columnMap, String key, Integer defaultValue) {
